@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F16134242CB4B4C000B7450B"
-               BuildableName = "Telepromter.app"
-               BlueprintName = "Telepromter"
-               ReferencedContainer = "container:Telepromter.xcodeproj">
+               BuildableName = "Teleprompter DE.app"
+               BlueprintName = "Teleprompter DE"
+               ReferencedContainer = "container:Teleprompter DE.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,18 +27,23 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestPlan = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:Telepromter.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
-            skipped = "NO"
+            skipped = "YES"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F16134342CB4B4C200B7450B"
-               BuildableName = "TelepromterTests.xctest"
-               BlueprintName = "TelepromterTests"
-               ReferencedContainer = "container:Telepromter.xcodeproj">
+               BuildableName = "Teleprompter DETests.xctest"
+               BlueprintName = "Teleprompter DETests"
+               ReferencedContainer = "container:Teleprompter DE.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -47,9 +52,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F161343E2CB4B4C200B7450B"
-               BuildableName = "TelepromterUITests.xctest"
-               BlueprintName = "TelepromterUITests"
-               ReferencedContainer = "container:Telepromter.xcodeproj">
+               BuildableName = "Teleprompter DEUITests.xctest"
+               BlueprintName = "Teleprompter DEUITests"
+               ReferencedContainer = "container:Teleprompter DE.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -69,11 +74,14 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F16134242CB4B4C000B7450B"
-            BuildableName = "Telepromter.app"
-            BlueprintName = "Telepromter"
-            ReferencedContainer = "container:Telepromter.xcodeproj">
+            BuildableName = "Teleprompter DE.app"
+            BlueprintName = "Teleprompter DE"
+            ReferencedContainer = "container:Teleprompter DE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../Teleprompter DE.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -86,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F16134242CB4B4C000B7450B"
-            BuildableName = "Telepromter.app"
-            BlueprintName = "Telepromter"
-            ReferencedContainer = "container:Telepromter.xcodeproj">
+            BuildableName = "Teleprompter DE.app"
+            BlueprintName = "Teleprompter DE"
+            ReferencedContainer = "container:Teleprompter DE.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

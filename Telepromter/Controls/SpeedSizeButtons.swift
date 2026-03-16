@@ -10,7 +10,7 @@ import SwiftUI
 struct SpeedSizeButtons: View {
     @EnvironmentObject var contentVM: ContentViewModel
     @AppStorage("textSize") private var textSize: Int = 3 // Default to 3
-    @AppStorage("speedValue") private var speedValue: Double = 2 // Default to 2 (middle of 1–5)
+    @AppStorage("speedValue") private var speedValue: Double = 2.5 // Default to 2 (middle of 1–5)
     @State private var opacity: Double = 1.0
     @State private var speedOpacity: Double = 0.0
     @Binding var fontSpeedBar: Bool
@@ -26,6 +26,7 @@ struct SpeedSizeButtons: View {
                             Button(
                                 action: {
                                     withAnimation(.smooth) {
+                                        simpleSuccess()
                                         textSize = min(
                                             textSize + 1,
                                             10
@@ -45,12 +46,12 @@ struct SpeedSizeButtons: View {
                                     Text("+")
                                         .font(.system(size: 25))
                                         .bold()
-                                        .foregroundStyle(Color.color.background)
+                                        .foregroundStyle(Color.color.text)
                                         .frame(width: 30, height: 30)
                                     
                                 }
                                 .disabled(textSize >= 10)
-                        
+                            
                             // Display current text size (1–5)
                             Text("\(textSize)")
                                 .font(.system(size: 35))
@@ -58,13 +59,14 @@ struct SpeedSizeButtons: View {
                                 .bold()
                                 .opacity(1)
                                 .foregroundStyle(
-                                    textSize >= 10 ? .orange : Color.color.background
+                                    textSize >= 10 ? .orange : Color.color.text
                                 )// Disable when at max
-                        
+                            
                             // Minus button to decrease text size
                             Button(
                                 action: {
                                     withAnimation(.smooth) {
+                                        simpleSuccess()
                                         textSize = max(textSize - 1, 1) // Min 1
                                         contentVM.fontSize = Double(
                                             textSize * 10
@@ -81,90 +83,49 @@ struct SpeedSizeButtons: View {
                                     Text("-")
                                         .font(.system(size: 40))
                                         .bold()
-                                        .foregroundStyle(Color.color.background)
+                                        .foregroundStyle(Color.color.text)
                                         .frame(width: 30, height: 30)
                                     
                                 }
                                 .disabled(textSize <= 1) // Disable when at min
-                        
+                            
                             Spacer()
-                        
+                            
                             // Icon above buttons
                             Image(systemName: "textformat.size")
                                 .font(.custom("Arial", size: 16))
-                                .foregroundStyle(Color.color.background)
+                                .foregroundStyle(Color.color.text)
                                 .opacity(1)
                                 .onTapGesture {
                                     withAnimation(.bouncy){
                                         fontSpeedBar.toggle()
                                     }
                                 }
-                        
-                        
                         }
-                    
-                        Divider()
-                    
-                        HStack{
                         
+                        Divider().onTapGesture {
+                            withAnimation(.bouncy){
+                                fontSpeedBar.toggle()
+                            }
+                        }
+                        
+                        HStack{
+                            
                             // Icon above buttons
                             Image(systemName: "figure.run")
                                 .font(.custom("Arial", size: 16))
-                                .foregroundStyle(Color.color.background)
+                                .foregroundStyle(Color.color.text)
                                 .opacity(1)
                                 .onTapGesture {
                                     withAnimation(.bouncy){
                                         fontSpeedBar.toggle()
                                     }
                                 }
-                        
+                            
                             // Plus button to increase speed
                             Button(
                                 action: {
-                                    withAnimation(.smooth) {
-                                        speedValue = min(
-                                            speedValue + 0.5,
-                                            6
-                                        ) // Max 6
-                                        contentVM.scrollSpeed = Double(
-                                            speedValue * 5
-                                        ) // Map 1–5 to 10–50
-                                        speedOpacity = 0.8
-                                    }
-                                    DispatchQueue.main
-                                        .asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation(.smooth) {
-                                                speedOpacity = 0.3
-                                            }
-                                        }
-                                }) {
-                                    Text("+")
-                                        .font(.system(size: 25))
-                                        .bold()
-                                        .foregroundStyle(Color.color.background)
-                                        .frame(width: 30, height: 30)
-                                
-                                }
-                                .padding(.vertical, 4)
-                                .disabled(
-                                    speedValue >= 6
-                                ) // Disable when at max
-                        
-                        
-                            // Display current speed value (1–5)
-                            Text(String(format: "%.1f", speedValue))
-                                .font(.system(size: 35))
-                                .frame(width: 54)
-                                .bold()
-                                .opacity(1)
-                                .foregroundStyle(
-                                    speedValue >= 6 ? .orange : Color.color.background
-                                )// Disable when at max
-                        
-                        
-                            // Minus button to decrease speed
-                            Button(
-                                action: {
+                                    simpleSuccess()
                                     withAnimation(.smooth) {
                                         speedValue = max(
                                             speedValue - 0.5,
@@ -185,16 +146,62 @@ struct SpeedSizeButtons: View {
                                     Text("-")
                                         .font(.system(size: 40))
                                         .bold()
-                                        .foregroundStyle(Color.color.background)
+                                        .foregroundStyle(Color.color.text)
                                         .frame(width: 30, height: 30)
                                 }
+                            
+                            
+                            // Display current speed value (1–5)
+                            Text(String(format: "%.1f", speedValue))
+                                .font(.system(size: 35))
+                                .frame(width: 54)
+                                .bold()
+                                .opacity(1)
+                                .foregroundStyle(
+                                    speedValue >= 6 ? .orange : Color.color.text
+                                )// Disable when at max
+                            
+                            
+                            // Minus button to decrease speed
+                            Button(
+                                action: {
+                                    withAnimation(.smooth) {
+                                        simpleSuccess()
+                                        speedValue = min(
+                                            speedValue + 0.5,
+                                            6
+                                        ) // Max 6
+                                        contentVM.scrollSpeed = Double(
+                                            speedValue * 5
+                                        ) // Map 1–5 to 10–50
+                                        speedOpacity = 0.8
+                                    }
+                                    DispatchQueue.main
+                                        .asyncAfter(deadline: .now() + 0.3) {
+                                            withAnimation(.smooth) {
+                                                speedOpacity = 0.3
+                                            }
+                                        }
+                                }) {
+                                    Text("+")
+                                        .font(.system(size: 25))
+                                        .bold()
+                                        .foregroundStyle(Color.color.text)
+                                        .frame(width: 30, height: 30)
+                                    
+                                }
+                                .padding(.vertical, 4)
+                                .disabled(
+                                    speedValue >= 6
+                                ) // Disable when at max
+                            
                         }
-                    
+                        
                     }
-                    .frame(width: fontSpeedBar ? 350 : 50, height: 20)
+                    .frame(width: fontSpeedBar ? 350 : 48, height: 25)
                     .padding(12)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(40)
+                    .applyIfAvailableGlassClear()
+                    .cornerRadius(30)
                     
                     
                     Spacer()

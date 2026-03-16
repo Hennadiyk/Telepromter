@@ -10,6 +10,12 @@
 		F10871572CD8B55C00A3987E /* ResizeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10871562CD8B55C00A3987E /* ResizeBar.swift */; };
 		F114EE5D2CDD831700E2EDA5 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F114EE5C2CDD831700E2EDA5 /* MotionManager.swift */; };
 		F117D5AB2E136DA00048C2B7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F117D5AA2E136DA00048C2B7 /* ContentView.swift */; };
+		F142BFA82E369E2E00CA294D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = F142BFA72E369E2E00CA294D /* FirebaseCore */; };
+		F142BFAA2E36A01B00CA294D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F142BFA92E36A01A00CA294D /* GoogleService-Info.plist */; };
+		F142BFAC2E36A0F900CA294D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = F142BFAB2E36A0F900CA294D /* FirebaseStorage */; };
+		F142BFAE2E36A2F800CA294D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = F142BFAD2E36A2F800CA294D /* FirebaseDatabase */; };
+		F142BFB02E36A2F800CA294D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F142BFAF2E36A2F800CA294D /* FirebaseFirestore */; };
+		F142BFB22E380F9A00CA294D /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F142BFB12E380F9A00CA294D /* OnboardingView.swift */; };
 		F1439D7E2CC9F8E3000BD920 /* Lovetle.otf in Resources */ = {isa = PBXBuildFile; fileRef = F1439D4C2CC9F8E3000BD920 /* Lovetle.otf */; };
 		F1439D7F2CC9F8E3000BD920 /* Shape.otf in Resources */ = {isa = PBXBuildFile; fileRef = F1439D4D2CC9F8E3000BD920 /* Shape.otf */; };
 		F1439D802CC9F8E3000BD920 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1439D532CC9F8E3000BD920 /* Preview Assets.xcassets */; };
@@ -26,36 +32,27 @@
 		F1439DA72CC9F8E3000BD920 /* TextinputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1439D792CC9F8E3000BD920 /* TextinputView.swift */; };
 		F14B83EE2DFB5E9E00471FA7 /* VideoCameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83ED2DFB5E9E00471FA7 /* VideoCameraViewModel.swift */; };
 		F14B83F02DFB5F6500471FA7 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83EF2DFB5F6500471FA7 /* CameraView.swift */; };
-		F14B83F22DFB744000471FA7 /* CameraTestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83F12DFB742E00471FA7 /* CameraTestViewModel.swift */; };
 		F14B83F42DFB9E9400471FA7 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83F32DFB9E8D00471FA7 /* Helper.swift */; };
+		F18A5DF82E2B20F800A88F7F /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18A5DF72E2B20F800A88F7F /* PaywallView.swift */; };
+		F18A5DFA2E2EF8B500A88F7F /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18A5DF92E2EF8AB00A88F7F /* PaywallViewModel.swift */; };
+		F18A5DFF2E2F639000A88F7F /* Teleprompter DE.storekit in Resources */ = {isa = PBXBuildFile; fileRef = F18A5DFE2E2F639000A88F7F /* Teleprompter DE.storekit */; };
 		F19A86E22E27731400793DC3 /* TextInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86E12E27731000793DC3 /* TextInputViewModel.swift */; };
 		F19A86E62E27734E00793DC3 /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86E52E27734100793DC3 /* DocumentPicker.swift */; };
+		F19A86EB2E287CCB00793DC3 /* AudioWaveformBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86EA2E287CC100793DC3 /* AudioWaveformBarView.swift */; };
+		F19A86ED2E2A12F800793DC3 /* AccountDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86EC2E2A12F800793DC3 /* AccountDetailsView.swift */; };
+		F19A86F32E2A263500793DC3 /* FeatureRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86F22E2A263500793DC3 /* FeatureRequestView.swift */; };
+		F19A86F52E2A26F600793DC3 /* TermsofuseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19A86F42E2A26F600793DC3 /* TermsofuseView.swift */; };
 		F1EF1B872E14FB6F000A8B9E /* SpeedSizeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B862E14FB6F000A8B9E /* SpeedSizeButtons.swift */; };
 		F1EF1B8B2E160016000A8B9E /* VideoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B8A2E160016000A8B9E /* VideoButton.swift */; };
 		F1EF1B8D2E160256000A8B9E /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B8C2E160256000A8B9E /* PlayButton.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		F16134362CB4B4C200B7450B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F161341D2CB4B4C000B7450B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F16134242CB4B4C000B7450B;
-			remoteInfo = Telepromter;
-		};
-		F16134402CB4B4C200B7450B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F161341D2CB4B4C000B7450B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F16134242CB4B4C000B7450B;
-			remoteInfo = Telepromter;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		F10871562CD8B55C00A3987E /* ResizeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeBar.swift; sourceTree = "<group>"; };
 		F114EE5C2CDD831700E2EDA5 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		F117D5AA2E136DA00048C2B7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F142BFA92E36A01A00CA294D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F142BFB12E380F9A00CA294D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F1439D4C2CC9F8E3000BD920 /* Lovetle.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Lovetle.otf; sourceTree = "<group>"; };
 		F1439D4D2CC9F8E3000BD920 /* Shape.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Shape.otf; sourceTree = "<group>"; };
 		F1439D532CC9F8E3000BD920 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -73,50 +70,32 @@
 		F1439D7C2CC9F8E3000BD920 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F14B83ED2DFB5E9E00471FA7 /* VideoCameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCameraViewModel.swift; sourceTree = "<group>"; };
 		F14B83EF2DFB5F6500471FA7 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		F14B83F12DFB742E00471FA7 /* CameraTestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraTestViewModel.swift; sourceTree = "<group>"; };
 		F14B83F32DFB9E8D00471FA7 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
-		F16134252CB4B4C000B7450B /* Telepromter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Telepromter.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F16134352CB4B4C200B7450B /* TelepromterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepromterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F161343F2CB4B4C200B7450B /* TelepromterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepromterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F16134252CB4B4C000B7450B /* Teleprompter DE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Teleprompter DE.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F18A5DF72E2B20F800A88F7F /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		F18A5DF92E2EF8AB00A88F7F /* PaywallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewModel.swift; sourceTree = "<group>"; };
+		F18A5DFE2E2F639000A88F7F /* Teleprompter DE.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Teleprompter DE.storekit"; sourceTree = "<group>"; };
 		F19A86E12E27731000793DC3 /* TextInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewModel.swift; sourceTree = "<group>"; };
 		F19A86E52E27734100793DC3 /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
+		F19A86EA2E287CC100793DC3 /* AudioWaveformBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioWaveformBarView.swift; sourceTree = "<group>"; };
+		F19A86EC2E2A12F800793DC3 /* AccountDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDetailsView.swift; sourceTree = "<group>"; };
+		F19A86F22E2A263500793DC3 /* FeatureRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureRequestView.swift; sourceTree = "<group>"; };
+		F19A86F42E2A26F600793DC3 /* TermsofuseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsofuseView.swift; sourceTree = "<group>"; };
+		F19A86FA2E2ACFC400793DC3 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F1EF1B862E14FB6F000A8B9E /* SpeedSizeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedSizeButtons.swift; sourceTree = "<group>"; };
 		F1EF1B8A2E160016000A8B9E /* VideoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoButton.swift; sourceTree = "<group>"; };
 		F1EF1B8C2E160256000A8B9E /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		F16134382CB4B4C200B7450B /* TelepromterTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TelepromterTests;
-			sourceTree = "<group>";
-		};
-		F16134422CB4B4C200B7450B /* TelepromterUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TelepromterUITests;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F16134222CB4B4C000B7450B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F16134322CB4B4C200B7450B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F161343C2CB4B4C200B7450B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				F142BFAE2E36A2F800CA294D /* FirebaseDatabase in Frameworks */,
+				F142BFB02E36A2F800CA294D /* FirebaseFirestore in Frameworks */,
+				F142BFA82E369E2E00CA294D /* FirebaseCore in Frameworks */,
+				F142BFAC2E36A0F900CA294D /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,6 +135,7 @@
 		F1439D5E2CC9F8E3000BD920 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F18A5DF92E2EF8AB00A88F7F /* PaywallViewModel.swift */,
 				F19A86E12E27731000793DC3 /* TextInputViewModel.swift */,
 				F1439D5D2CC9F8E3000BD920 /* ContentViewModel.swift */,
 				F14B83ED2DFB5E9E00471FA7 /* VideoCameraViewModel.swift */,
@@ -177,7 +157,7 @@
 		F1439D7A2CC9F8E3000BD920 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				F14B83F12DFB742E00471FA7 /* CameraTestViewModel.swift */,
+				F19A86EA2E287CC100793DC3 /* AudioWaveformBarView.swift */,
 				F1439D782CC9F8E3000BD920 /* TelepromterApp.swift */,
 				F1439D6D2CC9F8E3000BD920 /* BackgroundView.swift */,
 				F117D5AA2E136DA00048C2B7 /* ContentView.swift */,
@@ -186,6 +166,11 @@
 				F1439D772CC9F8E3000BD920 /* SettingsView.swift */,
 				F1439D792CC9F8E3000BD920 /* TextinputView.swift */,
 				F14B83EF2DFB5F6500471FA7 /* CameraView.swift */,
+				F19A86EC2E2A12F800793DC3 /* AccountDetailsView.swift */,
+				F19A86F22E2A263500793DC3 /* FeatureRequestView.swift */,
+				F19A86F42E2A26F600793DC3 /* TermsofuseView.swift */,
+				F18A5DF72E2B20F800A88F7F /* PaywallView.swift */,
+				F142BFB12E380F9A00CA294D /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -201,6 +186,7 @@
 				F1439D7A2CC9F8E3000BD920 /* Views */,
 				F1439D7B2CC9F8E3000BD920 /* Assets.xcassets */,
 				F1439D7C2CC9F8E3000BD920 /* Info.plist */,
+				F142BFA92E36A01A00CA294D /* GoogleService-Info.plist */,
 			);
 			path = Telepromter;
 			sourceTree = "<group>";
@@ -208,9 +194,9 @@
 		F161341C2CB4B4C000B7450B = {
 			isa = PBXGroup;
 			children = (
+				F18A5DFE2E2F639000A88F7F /* Teleprompter DE.storekit */,
 				F1439D7D2CC9F8E3000BD920 /* Telepromter */,
-				F16134382CB4B4C200B7450B /* TelepromterTests */,
-				F16134422CB4B4C200B7450B /* TelepromterUITests */,
+				F19A86F92E2ACFC400793DC3 /* Frameworks */,
 				F16134262CB4B4C000B7450B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -218,19 +204,25 @@
 		F16134262CB4B4C000B7450B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F16134252CB4B4C000B7450B /* Telepromter.app */,
-				F16134352CB4B4C200B7450B /* TelepromterTests.xctest */,
-				F161343F2CB4B4C200B7450B /* TelepromterUITests.xctest */,
+				F16134252CB4B4C000B7450B /* Teleprompter DE.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F19A86F92E2ACFC400793DC3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F19A86FA2E2ACFC400793DC3 /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F16134242CB4B4C000B7450B /* Telepromter */ = {
+		F16134242CB4B4C000B7450B /* Teleprompter DE */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F16134492CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "Telepromter" */;
+			buildConfigurationList = F16134492CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "Teleprompter DE" */;
 			buildPhases = (
 				F16134212CB4B4C000B7450B /* Sources */,
 				F16134222CB4B4C000B7450B /* Frameworks */,
@@ -240,58 +232,16 @@
 			);
 			dependencies = (
 			);
-			name = Telepromter;
+			name = "Teleprompter DE";
 			packageProductDependencies = (
+				F142BFA72E369E2E00CA294D /* FirebaseCore */,
+				F142BFAB2E36A0F900CA294D /* FirebaseStorage */,
+				F142BFAD2E36A2F800CA294D /* FirebaseDatabase */,
+				F142BFAF2E36A2F800CA294D /* FirebaseFirestore */,
 			);
 			productName = Telepromter;
-			productReference = F16134252CB4B4C000B7450B /* Telepromter.app */;
+			productReference = F16134252CB4B4C000B7450B /* Teleprompter DE.app */;
 			productType = "com.apple.product-type.application";
-		};
-		F16134342CB4B4C200B7450B /* TelepromterTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F161344C2CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "TelepromterTests" */;
-			buildPhases = (
-				F16134312CB4B4C200B7450B /* Sources */,
-				F16134322CB4B4C200B7450B /* Frameworks */,
-				F16134332CB4B4C200B7450B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F16134372CB4B4C200B7450B /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				F16134382CB4B4C200B7450B /* TelepromterTests */,
-			);
-			name = TelepromterTests;
-			packageProductDependencies = (
-			);
-			productName = TelepromterTests;
-			productReference = F16134352CB4B4C200B7450B /* TelepromterTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		F161343E2CB4B4C200B7450B /* TelepromterUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F161344F2CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "TelepromterUITests" */;
-			buildPhases = (
-				F161343B2CB4B4C200B7450B /* Sources */,
-				F161343C2CB4B4C200B7450B /* Frameworks */,
-				F161343D2CB4B4C200B7450B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F16134412CB4B4C200B7450B /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				F16134422CB4B4C200B7450B /* TelepromterUITests */,
-			);
-			name = TelepromterUITests;
-			packageProductDependencies = (
-			);
-			productName = TelepromterUITests;
-			productReference = F161343F2CB4B4C200B7450B /* TelepromterUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -306,17 +256,9 @@
 					F16134242CB4B4C000B7450B = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					F16134342CB4B4C200B7450B = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = F16134242CB4B4C000B7450B;
-					};
-					F161343E2CB4B4C200B7450B = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = F16134242CB4B4C000B7450B;
-					};
 				};
 			};
-			buildConfigurationList = F16134202CB4B4C000B7450B /* Build configuration list for PBXProject "Telepromter" */;
+			buildConfigurationList = F16134202CB4B4C000B7450B /* Build configuration list for PBXProject "Teleprompter DE" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -325,14 +267,15 @@
 			);
 			mainGroup = F161341C2CB4B4C000B7450B;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F16134262CB4B4C000B7450B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F16134242CB4B4C000B7450B /* Telepromter */,
-				F16134342CB4B4C200B7450B /* TelepromterTests */,
-				F161343E2CB4B4C200B7450B /* TelepromterUITests */,
+				F16134242CB4B4C000B7450B /* Teleprompter DE */,
 			);
 		};
 /* End PBXProject section */
@@ -345,21 +288,9 @@
 				F1439D7E2CC9F8E3000BD920 /* Lovetle.otf in Resources */,
 				F1439D7F2CC9F8E3000BD920 /* Shape.otf in Resources */,
 				F1439D802CC9F8E3000BD920 /* Preview Assets.xcassets in Resources */,
+				F18A5DFF2E2F639000A88F7F /* Teleprompter DE.storekit in Resources */,
 				F1439D812CC9F8E3000BD920 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F16134332CB4B4C200B7450B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F161343D2CB4B4C200B7450B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				F142BFAA2E36A01B00CA294D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,17 +301,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F19A86F32E2A263500793DC3 /* FeatureRequestView.swift in Sources */,
 				F14B83EE2DFB5E9E00471FA7 /* VideoCameraViewModel.swift in Sources */,
+				F142BFB22E380F9A00CA294D /* OnboardingView.swift in Sources */,
 				F1439D8C2CC9F8E3000BD920 /* Color.swift in Sources */,
 				F1439D8D2CC9F8E3000BD920 /* Device.swift in Sources */,
+				F18A5DFA2E2EF8B500A88F7F /* PaywallViewModel.swift in Sources */,
 				F14B83F02DFB5F6500471FA7 /* CameraView.swift in Sources */,
+				F18A5DF82E2B20F800A88F7F /* PaywallView.swift in Sources */,
 				F114EE5D2CDD831700E2EDA5 /* MotionManager.swift in Sources */,
 				F14B83F42DFB9E9400471FA7 /* Helper.swift in Sources */,
 				F1439D8F2CC9F8E3000BD920 /* Haptics.swift in Sources */,
-				F14B83F22DFB744000471FA7 /* CameraTestViewModel.swift in Sources */,
+				F19A86EB2E287CCB00793DC3 /* AudioWaveformBarView.swift in Sources */,
 				F1439D912CC9F8E3000BD920 /* ContentViewModel.swift in Sources */,
 				F19A86E22E27731400793DC3 /* TextInputViewModel.swift in Sources */,
 				F1439D9B2CC9F8E3000BD920 /* BackgroundView.swift in Sources */,
+				F19A86ED2E2A12F800793DC3 /* AccountDetailsView.swift in Sources */,
 				F117D5AB2E136DA00048C2B7 /* ContentView.swift in Sources */,
 				F19A86E62E27734E00793DC3 /* DocumentPicker.swift in Sources */,
 				F1EF1B872E14FB6F000A8B9E /* SpeedSizeButtons.swift in Sources */,
@@ -392,37 +328,11 @@
 				F1439DA62CC9F8E3000BD920 /* TelepromterApp.swift in Sources */,
 				F1439DA72CC9F8E3000BD920 /* TextinputView.swift in Sources */,
 				F1EF1B8B2E160016000A8B9E /* VideoButton.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F16134312CB4B4C200B7450B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F161343B2CB4B4C200B7450B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				F19A86F52E2A26F600793DC3 /* TermsofuseView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		F16134372CB4B4C200B7450B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F16134242CB4B4C000B7450B /* Telepromter */;
-			targetProxy = F16134362CB4B4C200B7450B /* PBXContainerItemProxy */;
-		};
-		F16134412CB4B4C200B7450B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F16134242CB4B4C000B7450B /* Telepromter */;
-			targetProxy = F16134402CB4B4C200B7450B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F16134472CB4B4C200B7450B /* Debug */ = {
@@ -554,7 +464,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Telepromter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -579,9 +489,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.Telepromter;
+				MARKETING_VERSION = 1.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TeleprompterDE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -594,7 +507,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Telepromter/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -619,87 +532,22 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TeleprompterDE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		F161344D2CB4B4C200B7450B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TelepromterTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Telepromter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Telepromter";
-			};
-			name = Debug;
-		};
-		F161344E2CB4B4C200B7450B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TelepromterTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Telepromter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Telepromter";
-			};
-			name = Release;
-		};
-		F16134502CB4B4C200B7450B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TelepromterUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Telepromter;
-			};
-			name = Debug;
-		};
-		F16134512CB4B4C200B7450B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TelepromterUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Telepromter;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F16134202CB4B4C000B7450B /* Build configuration list for PBXProject "Telepromter" */ = {
+		F16134202CB4B4C000B7450B /* Build configuration list for PBXProject "Teleprompter DE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F16134472CB4B4C200B7450B /* Debug */,
@@ -708,7 +556,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F16134492CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "Telepromter" */ = {
+		F16134492CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "Teleprompter DE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F161344A2CB4B4C200B7450B /* Debug */,
@@ -717,25 +565,41 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F161344C2CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "TelepromterTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F161344D2CB4B4C200B7450B /* Debug */,
-				F161344E2CB4B4C200B7450B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F161344F2CB4B4C200B7450B /* Build configuration list for PBXNativeTarget "TelepromterUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F16134502CB4B4C200B7450B /* Debug */,
-				F16134512CB4B4C200B7450B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F142BFA72E369E2E00CA294D /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		F142BFAB2E36A0F900CA294D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		F142BFAD2E36A2F800CA294D /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		F142BFAF2E36A2F800CA294D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F142BFA62E369E2E00CA294D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F161341D2CB4B4C000B7450B /* Project object */;
 }

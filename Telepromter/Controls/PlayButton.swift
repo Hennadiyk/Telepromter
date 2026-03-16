@@ -28,19 +28,14 @@ struct PlayButton: View {
             
             RoundedRectangle(cornerRadius: 20)
                 .overlay{
-                    Text("PLAY")
+                    Text(contentVM.isPlaying ? "PAUSE" : "PLAY")
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(.white)
-                        
+                    
                 }
                 .frame(width: 80, height: 11)
                 .foregroundStyle(.blue)
-                //.offset(x: 35, y: 42)
-                
-                
-                
-                
-                
+            
         }
         .frame(width: 100, height: 100)
         

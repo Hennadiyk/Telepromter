@@ -8,7 +8,7 @@
 import SwiftUI
 import AVFoundation
 
-struct CameraPreview: UIViewRepresentable {
+struct CameraView: UIViewRepresentable {
     let previewLayer: AVCaptureVideoPreviewLayer
     
     func makeUIView(context: Context) -> UIView {
