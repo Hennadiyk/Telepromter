@@ -29,11 +29,11 @@ struct PlayButton: View {
             RoundedRectangle(cornerRadius: 20)
                 .overlay{
                     Text(contentVM.isPlaying ? "PAUSE" : "PLAY")
-                        .font(.system(size: 11, weight: .bold))
+                        .font(.system(size: 14, weight: .bold))
                         .foregroundStyle(.white)
                     
                 }
-                .frame(width: 80, height: 11)
+                .frame(width: 80, height: 15)
                 .foregroundStyle(.blue)
             
         }

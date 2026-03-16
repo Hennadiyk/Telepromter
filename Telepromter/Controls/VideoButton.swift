@@ -95,7 +95,6 @@ struct VideoButton: View {
                                     withAnimation(.easeInOut(duration: 1)) {
                                         if contentVM.videoOn {
                                             cameraViewModel.toggleRecording()
-                                            contentVM.isPlaying = false
                                         }
                                     }
                                 }) {
@@ -139,7 +138,7 @@ struct VideoButton: View {
                             }
                             
                         }
-                        .frame(height: 50)
+                        .frame(height: 60)
                         .frame(width: buttonWidth, alignment: .leading)
                         
                         .clipped()
@@ -152,7 +151,7 @@ struct VideoButton: View {
                             
                         }
                 }
-                .padding(.bottom, 22)
+                .padding(.bottom, 10)
                 
             }
             .sheet(isPresented: $paywallViewModel.isPresented) {

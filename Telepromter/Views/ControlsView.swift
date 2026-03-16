@@ -64,6 +64,7 @@ struct ControlsView: View {
                 CameraView(previewLayer: cameraViewModel.previewLayer)
                     .statusBar(hidden: true)
                     .ignoresSafeArea(edges: [.top, .trailing, .leading])
+                    .allowsHitTesting(false)
                     .onAppear {
                         cameraViewModel.checkPermissions()
                     }
@@ -136,10 +137,10 @@ struct ControlsView: View {
                 .opacity(isDragging ? 0.6 : 1)
                 
                 SpeedSizeButtons(fontSpeedBar: $fontSpeedBar)
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 20)
                 
                 VideoButton()
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 20)
                 
                 
                 

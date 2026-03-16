@@ -38,20 +38,20 @@ struct ResizeBar: View {
                     startPoint: .leading,
                     endPoint: .trailing
                 ),
-                style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round)
+                style: StrokeStyle(lineWidth: 18, lineCap: .round, lineJoin: .round)
             )
             .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
             
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(-1),
                 clockwise: false)
-            .stroke(.ultraThinMaterial, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+            .stroke(.ultraThinMaterial, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             
             // Progress arc based on contentVM.progress
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(80 - (80 * min(contentVM.progress, 1))),
                 clockwise: false)
-            .stroke(.blue, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+            .stroke(.blue, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .onAppear {
                 withAnimation(.bouncy(duration: 2)) {
                     lineAngle = 80

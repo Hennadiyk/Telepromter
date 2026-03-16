@@ -26,6 +26,9 @@ class VideoCameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecor
     @Published var audioLevel: Float = 0.0
     @Published var audioLevelsBuffer: [Float] = Array(repeating: 0.0, count: 40)
     
+    // Tracks whether the user has intentionally started the camera session
+    private var userWantsSessionRunning = false
+    
     @AppStorage("selectedResolution") var selectedResolution: VideoResolution = .hd1080 {
         didSet {
             updateCameraSettings()
@@ -55,6 +58,7 @@ class VideoCameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecor
         super.init()
         setupPreviewLayer()
         setupOrientationObserver()
+        setupAppLifecycleObservers()
     }
     
     deinit {
@@ -68,6 +72,69 @@ class VideoCameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecor
             queue: .main
         ) { [weak self] _ in
             self?.updatePreviewOrientation()
+        }
+    }
+    
+    private func setupAppLifecycleObservers() {
+        // Stop session when app fully backgrounds (only if user turned camera on)
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard self?.userWantsSessionRunning == true else { return }
+            self?.sessionQueue.async { [weak self] in
+                self?.captureSession.stopRunning()
+                DispatchQueue.main.async { self?.isSessionRunning = false }
+            }
+        }
+        
+        // Resume session when app returns to foreground (only if user had camera on)
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard self?.userWantsSessionRunning == true else { return }
+            self?.restartSession()
+        }
+        
+        // Handle AVCaptureSession interruptions (only if user had camera on)
+        NotificationCenter.default.addObserver(
+            forName: AVCaptureSession.wasInterruptedNotification,
+            object: captureSession,
+            queue: .main
+        ) { [weak self] _ in
+            guard self?.userWantsSessionRunning == true else { return }
+            self?.sessionQueue.async { [weak self] in
+                self?.captureSession.stopRunning()
+                DispatchQueue.main.async { self?.isSessionRunning = false }
+            }
+        }
+        
+        NotificationCenter.default.addObserver(
+            forName: AVCaptureSession.interruptionEndedNotification,
+            object: captureSession,
+            queue: .main
+        ) { [weak self] _ in
+            guard self?.userWantsSessionRunning == true else { return }
+            self?.restartSession()
+        }
+    }
+    
+    /// Fully tears down and rebuilds the session to recover from interruptions.
+    func restartSession() {
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            // Remove all existing inputs/outputs before reconfiguring
+            self.captureSession.beginConfiguration()
+            for input in self.captureSession.inputs { self.captureSession.removeInput(input) }
+            for output in self.captureSession.outputs { self.captureSession.removeOutput(output) }
+            self.captureSession.commitConfiguration()
+            self.currentInput = nil
+            self.currentCamera = nil
+            self.setupCamera()
+            self.startSession()
         }
     }
     
@@ -463,6 +530,7 @@ class VideoCameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecor
     }
     
     func startSession() {
+        userWantsSessionRunning = true
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             if !self.captureSession.isRunning {
@@ -475,6 +543,7 @@ class VideoCameraViewModel: NSObject, ObservableObject, AVCaptureFileOutputRecor
     }
     
     func stopSession() {
+        userWantsSessionRunning = false
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             if self.captureSession.isRunning {

@@ -198,7 +198,7 @@ struct SpeedSizeButtons: View {
                         }
                         
                     }
-                    .frame(width: fontSpeedBar ? 350 : 48, height: 25)
+                    .frame(width: fontSpeedBar ? 340 : 48, height: 25)
                     .padding(12)
                     .applyIfAvailableGlassClear()
                     .cornerRadius(30)
@@ -208,7 +208,7 @@ struct SpeedSizeButtons: View {
                 }
             }
             
-        }.padding(.bottom, 85)
+        }.padding(.bottom, 80)
         
     }
 }

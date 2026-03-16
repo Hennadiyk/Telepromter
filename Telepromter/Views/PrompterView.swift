@@ -67,6 +67,11 @@ struct PrompterView: View {
     // Cancels any in‑flight repeatForever by rebuilding the subtree
     @State private var animationInstanceID = UUID()
     
+    // Tracks whether a drag gesture is currently active
+    @State private var isDragging = false
+    // Last translation seen, so we can compute per-frame deltas
+    @State private var lastDragTranslation: CGFloat = 0
+    
     var body: some View {
         GeometryReader { geometry in
             animatedStack
@@ -143,17 +148,28 @@ struct PrompterView: View {
                         if contentVM.isPlaying {
                             contentVM.isPlaying = false
                             pauseFreezeAtLiveY()                // freeze exactly where it is
+                            isDragging = true
+                            lastDragTranslation = value.translation.height
+                        } else if !isDragging {
+                            // First event of a new paused drag
+                            isDragging = true
+                            lastDragTranslation = value.translation.height
                         }
-                        let proposed = contentVM.initialDragOffset + value.translation.height
+                        // Use delta so position tracks finger continuously in the same gesture
+                        let delta = value.translation.height - lastDragTranslation
+                        lastDragTranslation = value.translation.height
+                        let proposed = contentVM.yOffset + delta
                         let minY = -contentVM.textContentHeight
                         let maxY = contentVM.textInputWindowHeight
                         contentVM.yOffset = min(max(proposed, minY), maxY)
+                        contentVM.initialDragOffset = contentVM.yOffset
                         baseOffset = contentVM.yOffset
                         liveY = contentVM.yOffset
                         contentVM.updateProgress()
                     }
                     .onEnded { _ in
-                        contentVM.initialDragOffset = contentVM.yOffset
+                        isDragging = false
+                        lastDragTranslation = 0
                     }
             )
             .onChange(of: contentVM.isPlaying, initial: false) { _, playing in
