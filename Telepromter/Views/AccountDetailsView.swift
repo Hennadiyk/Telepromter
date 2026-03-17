@@ -21,14 +21,14 @@ struct AccountDetailsView: View {
                             HStack {
                                 Image("logo")
                                     .resizable()
-                                    .frame(width: 85, height: 85)
+                                    .frame(width: 120, height: 120)
 
                                 Spacer()
 
                                 VStack(alignment: .trailing) {
                                     Text(subscriptionStatus)
                                         .font(.largeTitle)
-                                        .foregroundStyle(LinearGradient(colors: [.red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                        .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .topLeading, endPoint: .bottomTrailing))
                                         .bold()
                                     Text(subscriptionDescription)
                                         .font(.body)
@@ -56,7 +56,7 @@ struct AccountDetailsView: View {
                                             paywallViewModel.isPresented = true
                                         }
                                         .buttonStyle(.bordered)
-                                        .tint(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
+                                        .tint(LinearGradient(colors: [Color.color.gradientLow, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
                                     }
                                 }
                             }
@@ -88,7 +88,7 @@ struct AccountDetailsView: View {
                     Text("Teleprompter DE v\(appVersionTag)")
                         .font(.footnote)
                         .bold()
-                        .foregroundColor(.gray)
+                        .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
                         .frame(maxWidth: .infinity)
                         .padding(.bottom, 20)
                 }

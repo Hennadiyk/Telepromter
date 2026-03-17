@@ -32,7 +32,7 @@ struct PlayButton: View {
                         .foregroundStyle(.white)
                 }
                 .frame(width: 80, height: 15)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.color.gradientHigh)
         }
         .frame(width: 100, height: 100)
     }

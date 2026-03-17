@@ -34,6 +34,7 @@ struct ContentView: View {
                 OnboardingView()
             }
         }
+        .tint(Color.color.gradientHigh)
         .onChange(of: contentViewModel.isPlaying) { _, _ in updateIdleTimer() }
         .onChange(of: cameraViewModel.isRecording) { _, _ in updateIdleTimer() }
         .onAppear { updateIdleTimer() }

@@ -25,16 +25,15 @@ struct TextInputView: View {
                 TextEditor(text: $contentVM.textInput)
                     .focused($isEditorFocused)
                     .padding()
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 40))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: 40)
                             .stroke(.gray.opacity(0.2), lineWidth: 1)
                     )
                     .scrollContentBackground(.hidden)
 
-                Spacer(minLength: 16)
             }
-            .padding()
+            .padding([.horizontal, .bottom], 16)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button {
@@ -55,10 +54,19 @@ struct TextInputView: View {
                         contentVM.selectedTab = 1
                     } label: {
                         Text("Done")
+                            .foregroundStyle(contentVM.textInput.isEmpty ? Color.color.gradientHigh : Color.color.gradientLow)
                     }
                 }
             }
-            .navigationTitle("Add Text")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Add Text")
+                        .font(.title)
+                        .foregroundStyle(LinearGradient(colors: [Color.color.gradientLow, Color.color.gradientHigh], startPoint: .leading, endPoint: .trailing))
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .tint(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
             .sheet(isPresented: $viewModel.showDocumentPicker) {
                 DocumentPicker { url in
                     viewModel.handleDocumentSelection(url: url, contentVM: contentVM)

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "TeleprompterDE_t.png",
+      "filename" : "iCon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "TeleprompterDE_t 1.png",
+      "filename" : "iCon 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "TeleprompterDE_t 2.png",
+      "filename" : "iCon 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

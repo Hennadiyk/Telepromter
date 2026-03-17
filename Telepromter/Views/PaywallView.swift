@@ -16,7 +16,7 @@ struct PaywallView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [.gray, .clear]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(gradient: Gradient(colors: [.white, .clear]), startPoint: .top, endPoint: .bottom)
                     .opacity(0.5)
                     .edgesIgnoringSafeArea(.all)
 
@@ -50,10 +50,10 @@ struct HeaderImageView: View {
             VStack {
                 VStack {
                     Text("Teleprompter DE")
-                        .font(.largeTitle)
-                        .bold()
-                    Text("Premium")
-                        .font(.headline)
+                        .font(.system(size: 38, weight: .black, design: .default))
+                       
+                    Text("PREMIUM")
+                        .font(.system(size: 18, weight: .bold, design: .default))
                 }
                 .frame(height: 150)
                 .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .topLeading, endPoint: .bottomTrailing))

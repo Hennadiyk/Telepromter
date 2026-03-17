@@ -45,10 +45,10 @@ struct FeatureRequestView: View {
             return
         }
         isSubmitting = true
-
-        let db = Firestore.firestore()
         let text = featureText
-        Task {
+
+        Task { @MainActor in
+            let db = Firestore.firestore()
             do {
                 try await db.collection("feature_requests").addDocument(data: [
                     "text": text,

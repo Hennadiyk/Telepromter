@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "TeleprompterDE-iOS-Default-1024x1024@1x.jpg",
+      "filename" : "iCon.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "TeleprompterDE-iOS-Dark-1024x1024@1x.jpg",
+      "filename" : "iCon 1.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "TeleprompterDE-iOS-ClearLight-1024x1024@1x.jpg",
+      "filename" : "iCon 2.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

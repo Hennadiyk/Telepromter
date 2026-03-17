@@ -49,7 +49,7 @@ struct ResizeBar: View {
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(80 - (80 * min(progress, 1))),
                 clockwise: false)
-            .stroke(.blue, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
+            .stroke(Color.color.gradientHigh, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .onAppear {
                 withAnimation(.bouncy(duration: 2)) { lineAngle = 80 }
             }

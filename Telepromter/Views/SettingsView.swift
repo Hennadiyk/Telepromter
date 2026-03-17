@@ -26,11 +26,13 @@ struct SettingsView: View {
                             Picker("Resolution", selection: $cameraVM.selectedResolution) {
                                 ForEach(VideoResolution.allCases) { res in
                                     Text(res.rawValue).tag(res)
+                                        .foregroundStyle(.black)
                                 }
                             }
                             Picker("Frame Rate", selection: $cameraVM.selectedFrameRate) {
-                                ForEach(FrameRate.allCases) { rate in
+                                ForEach(cameraVM.supportedFrameRates) { rate in
                                     Text("\(rate.rawValue) fps").tag(rate)
+                                        .foregroundStyle(.black)
                                 }
                             }
                         } header: {
@@ -103,6 +105,7 @@ struct SettingsView: View {
                     }
                     .scrollContentBackground(.hidden)
                     .opacity(opacity)
+                    .tint(.primary)
                 }
                 .navigationTitle("Settings")
             }

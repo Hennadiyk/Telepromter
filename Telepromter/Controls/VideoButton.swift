@@ -53,7 +53,7 @@ struct VideoButton: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.blue))
+                                    .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.black))
                                     .padding(.horizontal, 22)
                             }
                         }

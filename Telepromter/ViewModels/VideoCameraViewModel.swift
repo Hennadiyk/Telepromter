@@ -28,18 +28,47 @@ final class VideoCameraViewModel: NSObject {
     var audioLevel: Float = 0.0
     var audioLevelsBuffer: [Float] = Array(repeating: 0.0, count: 40)
 
+    /// Frame rates actually supported by the front camera at the selected resolution.
+    var supportedFrameRates: [FrameRate] {
+        guard let camera = currentCamera ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+            return FrameRate.allCases
+        }
+        let resolution = selectedResolution.preset
+        let maxFPS = camera.formats
+            .filter { $0.mediaType == .video && $0.isSupported(for: resolution) }
+            .flatMap { $0.videoSupportedFrameRateRanges }
+            .map { $0.maxFrameRate }
+            .max() ?? 30
+        return FrameRate.allCases.filter { Double($0.rawValue) <= maxFPS }
+    }
+
     // Tracks whether the user has intentionally started the camera session
     // nonisolated(unsafe) because it is read from @Sendable NotificationCenter closures on the main queue
     @ObservationIgnored nonisolated(unsafe) private var userWantsSessionRunning = false
 
-    @ObservationIgnored @AppStorage("selectedResolution") var selectedResolution: VideoResolution = .hd1080 {
-        didSet { updateCameraSettings() }
+    var selectedResolution: VideoResolution = .hd1080 {
+        didSet {
+            UserDefaults.standard.set(selectedResolution.rawValue, forKey: "selectedResolution")
+            // Clamp frame rate if no longer supported at the new resolution
+            if !supportedFrameRates.contains(selectedFrameRate) {
+                selectedFrameRate = supportedFrameRates.last ?? .fps30
+            } else {
+                updateCameraSettings()
+            }
+        }
     }
-    @ObservationIgnored @AppStorage("selectedFrameRate") var selectedFrameRate: FrameRate = .fps30 {
-        didSet { updateCameraSettings() }
+    var selectedFrameRate: FrameRate = .fps30 {
+        didSet {
+            UserDefaults.standard.set(selectedFrameRate.rawValue, forKey: "selectedFrameRate")
+            updateCameraSettings()
+        }
     }
-    @ObservationIgnored @AppStorage("contdownOnOff") var countdownOnOff: Bool = false
-    @ObservationIgnored @AppStorage("selectedCountdown") var selectedCountdown = 3
+    var countdownOnOff: Bool = false {
+        didSet { UserDefaults.standard.set(countdownOnOff, forKey: "contdownOnOff") }
+    }
+    var selectedCountdown: Int = 3 {
+        didSet { UserDefaults.standard.set(selectedCountdown, forKey: "selectedCountdown") }
+    }
 
     // AVFoundation objects accessed from sessionQueue — not Sendable, marked nonisolated(unsafe)
     @ObservationIgnored nonisolated(unsafe) private let captureSession = AVCaptureSession()
@@ -56,6 +85,13 @@ final class VideoCameraViewModel: NSObject {
 
     override init() {
         super.init()
+        if let raw = UserDefaults.standard.string(forKey: "selectedResolution"),
+           let value = VideoResolution(rawValue: raw) { selectedResolution = value }
+        if let raw = UserDefaults.standard.object(forKey: "selectedFrameRate") as? Int,
+           let value = FrameRate(rawValue: raw) { selectedFrameRate = value }
+        countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
+        let countdown = UserDefaults.standard.integer(forKey: "selectedCountdown")
+        if countdown > 0 { selectedCountdown = countdown }
         setupPreviewLayer()
         setupOrientationObserver()
         setupAppLifecycleObservers()
@@ -335,7 +371,11 @@ final class VideoCameraViewModel: NSObject {
         captureSession.beginConfiguration()
         defer { captureSession.commitConfiguration() }
 
-        captureSession.sessionPreset = preset
+        // Use .inputPriority for all cases so we can set activeFormat directly.
+        // Setting device.activeFormat (done in configureCameraSettingsOnSessionQueue) automatically
+        // switches the session preset to .inputPriority — we set it here proactively to avoid
+        // the session trying to auto-configure the format when commitConfiguration() is called.
+        captureSession.sessionPreset = .inputPriority
         captureSession.automaticallyConfiguresApplicationAudioSession = false
 
         let audioSession = AVAudioSession.sharedInstance()
@@ -412,6 +452,32 @@ final class VideoCameraViewModel: NSObject {
         resolution: AVCaptureSession.Preset,
         resolutionName: String
     ) {
+        // Find the best format: must support the requested resolution, and prefer the one
+        // with the highest max frame rate that still meets or exceeds the requested fps.
+        // Sort by descending maxFrameRate so we pick the format that exactly supports the
+        // requested fps (or higher) at the requested resolution — not just any matching format.
+        let candidateFormats = device.formats
+            .filter { format in
+                // Only video-capable formats (exclude photo-only formats)
+                guard format.mediaType == .video else { return false }
+                guard format.isSupported(for: resolution) else { return false }
+                return format.videoSupportedFrameRateRanges.contains {
+                    $0.maxFrameRate >= frameRate
+                }
+            }
+            // Among all qualifying formats, prefer larger dimensions (higher quality) then
+            // the one whose max frame rate is closest to (but >= ) the requested rate.
+            .sorted { a, b in
+                let dimA = CMVideoFormatDescriptionGetDimensions(a.formatDescription)
+                let dimB = CMVideoFormatDescriptionGetDimensions(b.formatDescription)
+                let areaA = Int(dimA.width) * Int(dimA.height)
+                let areaB = Int(dimB.width) * Int(dimB.height)
+                if areaA != areaB { return areaA > areaB }
+                let maxA = a.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
+                let maxB = b.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
+                return maxA < maxB  // prefer lower (closer to requested) among equal-res formats
+            }
+
         do {
             try device.lockForConfiguration()
             defer { device.unlockForConfiguration() }
@@ -423,31 +489,34 @@ final class VideoCameraViewModel: NSObject {
                 device.exposureMode = .continuousAutoExposure
             }
 
-            let compatibleFormat = device.formats.first { format in
-                let supportsResolution = format.isSupported(for: resolution)
-                let supportsFrameRate = format.videoSupportedFrameRateRanges.contains {
-                    $0.minFrameRate <= frameRate && $0.maxFrameRate >= frameRate
-                }
-                return supportsResolution && supportsFrameRate
-            }
-
-            if let format = compatibleFormat {
+            if let format = candidateFormats.first {
+                // Setting activeFormat automatically changes the session preset to .inputPriority
                 device.activeFormat = format
                 let frameDuration = CMTime(value: 1, timescale: CMTimeScale(frameRate))
                 device.activeVideoMinFrameDuration = frameDuration
                 device.activeVideoMaxFrameDuration = frameDuration
-            } else if let fallback = device.formats.first(where: { $0.isSupported(for: resolution) }) {
-                device.activeFormat = fallback
-                let maxFPS = fallback.videoSupportedFrameRateRanges.sorted { $0.maxFrameRate < $1.maxFrameRate }.last?.maxFrameRate ?? 30.0
-                let frameDuration = CMTime(value: 1, timescale: CMTimeScale(maxFPS))
-                device.activeVideoMinFrameDuration = frameDuration
-                device.activeVideoMaxFrameDuration = frameDuration
-                Task { @MainActor [weak self] in
-                    self?.postAlert(message: "Frame rate \(Int(frameRate)) fps not supported. Using \(Int(maxFPS)) fps.")
-                }
             } else {
-                Task { @MainActor [weak self] in
-                    self?.postAlert(message: "No compatible format found for \(resolutionName)")
+                // No format supports the requested fps — fall back to max available fps at resolution
+                let fallbackFormats = device.formats
+                    .filter { $0.mediaType == .video && $0.isSupported(for: resolution) }
+                    .sorted { a, b in
+                        let maxA = a.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
+                        let maxB = b.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
+                        return maxA > maxB
+                    }
+                if let fallback = fallbackFormats.first,
+                   let maxFPS = fallback.videoSupportedFrameRateRanges.map({ $0.maxFrameRate }).max() {
+                    device.activeFormat = fallback
+                    let frameDuration = CMTime(value: 1, timescale: CMTimeScale(maxFPS))
+                    device.activeVideoMinFrameDuration = frameDuration
+                    device.activeVideoMaxFrameDuration = frameDuration
+                    Task { @MainActor [weak self] in
+                        self?.postAlert(message: "\(Int(frameRate)) fps not supported at \(resolutionName). Using \(Int(maxFPS)) fps.")
+                    }
+                } else {
+                    Task { @MainActor [weak self] in
+                        self?.postAlert(message: "No compatible format found for \(resolutionName)")
+                    }
                 }
             }
         } catch {
@@ -550,6 +619,8 @@ final class VideoCameraViewModel: NSObject {
         let resolutionName = selectedResolution.rawValue
         sessionQueue.async { [weak self] in
             guard let self = self, let camera = self.currentCamera else { return }
+            // Setting device.activeFormat inside configureCameraSettingsOnSessionQueue automatically
+            // changes the session preset to .inputPriority — no manual preset change needed.
             self.configureCameraSettingsOnSessionQueue(for: camera, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
         }
     }
@@ -594,6 +665,7 @@ enum VideoResolution: String, CaseIterable, Identifiable {
 enum FrameRate: Int, CaseIterable, Identifiable {
     case fps24 = 24
     case fps30 = 30
+    case fps60 = 60
 
     var id: Int { rawValue }
 }
