@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct TextInputView: View {
-    @EnvironmentObject var contentVM: ContentViewModel
-    @StateObject private var viewModel = TextInputViewModel()
+    @Environment(ContentViewModel.self) var contentVM
+    @State private var viewModel = TextInputViewModel()
     @FocusState private var isEditorFocused: Bool
-    
+
     var body: some View {
+        @Bindable var contentVM = contentVM
         NavigationStack {
             VStack {
                 if let error = viewModel.errorMessage {
@@ -20,7 +21,7 @@ struct TextInputView: View {
                         .foregroundStyle(.red)
                         .padding(.bottom)
                 }
-                
+
                 TextEditor(text: $contentVM.textInput)
                     .focused($isEditorFocused)
                     .padding()
@@ -30,7 +31,7 @@ struct TextInputView: View {
                             .stroke(.gray.opacity(0.2), lineWidth: 1)
                     )
                     .scrollContentBackground(.hidden)
-                
+
                 Spacer(minLength: 16)
             }
             .padding()
@@ -41,20 +42,19 @@ struct TextInputView: View {
                     } label: {
                         Label("Import", systemImage: "doc.text")
                     }
-                    
+
                     Button {
                         contentVM.textInput = ""
                         viewModel.errorMessage = nil
                     } label: {
                         Label("Reset", systemImage: "arrow.counterclockwise")
                     }
-                    
+
                     Button {
                         isEditorFocused = false
                         contentVM.selectedTab = 1
                     } label: {
                         Text("Done")
-                        // Label("Done", systemImage: "checkmark.circle")
                     }
                 }
             }
@@ -72,5 +72,5 @@ struct TextInputView: View {
 
 #Preview {
     TextInputView()
-        .environmentObject(ContentViewModel())
+        .environment(ContentViewModel())
 }

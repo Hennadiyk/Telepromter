@@ -1,5 +1,5 @@
 //
-//  test.swift
+//  ContentView.swift
 //  Telepromter
 //
 //  Created by Hennadiy Kvasov on 6/30/25.
@@ -8,50 +8,45 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var cameraViewModel: VideoCameraViewModel
-    @EnvironmentObject private var contentViewModel: ContentViewModel
+    @Environment(VideoCameraViewModel.self) private var cameraViewModel
+    @Environment(ContentViewModel.self) private var contentViewModel
     @AppStorage("isOnboardingComplete") var isOnboardingComplete: Bool = false
- 
+
     var body: some View {
-        ZStack{
-            
+        ZStack {
             if isOnboardingComplete {
-                
-                TabView(selection: $contentViewModel.selectedTab){
+                @Bindable var contentViewModel = contentViewModel
+                TabView(selection: $contentViewModel.selectedTab) {
                     Tab("Add Text", systemImage: "character.cursor.ibeam", value: 0) {
                         TextInputView()
-                        
                     }.badge(.zero)
-                    
+
                     Tab("Teleprompter", systemImage: "text.aligncenter", value: 1) {
                         ControlsView()
                             .toolbar(contentViewModel.videoOn ? .hidden : .visible, for: .tabBar)
                     }
-                    
+
                     Tab("Account", systemImage: "person.crop.circle", value: 2, role: UIDevice.isIPad ? .none : .search) {
                         AccountDetailsView()
-                        
                     }
-                    
                 }
             } else {
-                
                 OnboardingView()
-                
             }
         }
         .onChange(of: contentViewModel.isPlaying) { _, _ in updateIdleTimer() }
         .onChange(of: cameraViewModel.isRecording) { _, _ in updateIdleTimer() }
         .onAppear { updateIdleTimer() }
     }
-    
+
     private func updateIdleTimer() {
         UIApplication.shared.isIdleTimerDisabled = contentViewModel.isPlaying || cameraViewModel.isRecording
     }
 }
+
 #Preview {
     ContentView()
-        .environmentObject(VideoCameraViewModel())
-        .environmentObject(ContentViewModel())
-        .environmentObject(PaywallViewModel())
+        .environment(VideoCameraViewModel())
+        .environment(ContentViewModel())
+        .environment(PaywallViewModel())
 }

@@ -4,17 +4,18 @@
 //
 //  Created by Hennadiy Kvasov on 7/17/25.
 //
+
 import SwiftUI
-import FirebaseFirestore  // Add this import
+import FirebaseFirestore
 
 struct FeatureRequestView: View {
     @State private var featureText: String = ""
     @State private var isSubmitting: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
-    
+
     var body: some View {
-        ZStack{
+        ZStack {
             BackgroundView()
                 .opacity(0.4)
             Form {
@@ -26,18 +27,17 @@ struct FeatureRequestView: View {
                     submitFeatureRequest()
                 }
                 .disabled(isSubmitting || featureText.isEmpty)
-            }.scrollContentBackground(.hidden)
-            
-                .navigationTitle("Request Feature")
-                .alert("Submission Status", isPresented: $showAlert) {
-                    Button("OK") { }
-                } message: {
-                    Text(alertMessage)
-                }
+            }
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Request Feature")
+            .alert("Submission Status", isPresented: $showAlert) {
+                Button("OK") { }
+            } message: {
+                Text(alertMessage)
+            }
         }
-        
     }
-    
+
     private func submitFeatureRequest() {
         guard !featureText.isEmpty else {
             alertMessage = "Please enter a description."
@@ -45,22 +45,22 @@ struct FeatureRequestView: View {
             return
         }
         isSubmitting = true
-        
-        let db = Firestore.firestore()  // Get Firestore instance
-        db.collection("feature_requests").addDocument(data: [
-            "text": featureText,
-            "timestamp": Timestamp(date: Date())
-        ]) { error in
-            DispatchQueue.main.async {
-                self.isSubmitting = false
-                if let error = error {
-                    self.alertMessage = "Error: \(error.localizedDescription)"
-                } else {
-                    self.alertMessage = "Request sent successfully!"
-                    self.featureText = ""  // Clear input
-                }
-                self.showAlert = true
+
+        let db = Firestore.firestore()
+        let text = featureText
+        Task {
+            do {
+                try await db.collection("feature_requests").addDocument(data: [
+                    "text": text,
+                    "timestamp": Timestamp(date: Date())
+                ])
+                alertMessage = "Request sent successfully!"
+                featureText = ""
+            } catch {
+                alertMessage = "Error: \(error.localizedDescription)"
             }
+            isSubmitting = false
+            showAlert = true
         }
     }
 }

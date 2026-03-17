@@ -8,24 +8,27 @@
 import Foundation
 import CoreMotion
 import SwiftUI
-//Motion Manager for Header
+import Observation
 
-class MotionManager: ObservableObject {
-    
-    private let motionManager = CMMotionManager()
-    @Published var x = 0.0
-    @Published var y = 0.0
-    
+@Observable @MainActor
+final class MotionManager {
+    var x = 0.0
+    var y = 0.0
+
+    @ObservationIgnored private let motionManager = CMMotionManager()
+
     init() {
-        withAnimation(.bouncy(duration: 2)){
-            motionManager.deviceMotionUpdateInterval = 1/24
-            motionManager.startDeviceMotionUpdates(to: .main) { [weak self] data, error in
-                guard let motion = data?.attitude else { return }
-                
+        motionManager.deviceMotionUpdateInterval = 1 / 24
+        motionManager.startDeviceMotionUpdates(to: .main) { [weak self] data, _ in
+            guard let motion = data?.attitude else { return }
+            withAnimation(.bouncy(duration: 2)) {
                 self?.x = motion.roll
                 self?.y = motion.pitch
             }
         }
     }
-    
+
+    deinit {
+        motionManager.stopDeviceMotionUpdates()
+    }
 }

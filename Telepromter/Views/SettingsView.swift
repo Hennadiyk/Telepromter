@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct SettingsView: View {
-    
-    @EnvironmentObject var cameraVM: VideoCameraViewModel
-    @EnvironmentObject var contentVM: ContentViewModel
+    @Environment(VideoCameraViewModel.self) var cameraVM
+    @Environment(ContentViewModel.self) var contentVM
     @AppStorage("inLine") var inLine: Bool = false
     @AppStorage("themeColor") var themeColor: themeSwitching = .teal
     @State private var opacity: Double = 1
-    
+
     var body: some View {
+        @Bindable var cameraVM = cameraVM
         NavigationStack {
             ZStack {
                 BackgroundView()
@@ -23,19 +23,12 @@ struct SettingsView: View {
                 VStack {
                     Form {
                         Section {
-                            Picker(
-                                "Resolution",
-                                selection: $cameraVM.selectedResolution
-                            ) {
+                            Picker("Resolution", selection: $cameraVM.selectedResolution) {
                                 ForEach(VideoResolution.allCases) { res in
                                     Text(res.rawValue).tag(res)
                                 }
                             }
-                            
-                            Picker(
-                                "Frame Rate",
-                                selection: $cameraVM.selectedFrameRate
-                            ) {
+                            Picker("Frame Rate", selection: $cameraVM.selectedFrameRate) {
                                 ForEach(FrameRate.allCases) { rate in
                                     Text("\(rate.rawValue) fps").tag(rate)
                                 }
@@ -43,15 +36,12 @@ struct SettingsView: View {
                         } header: {
                             Text("Video Settings")
                         }
-                        
+
                         Section {
                             Toggle(isOn: $cameraVM.countdownOnOff) {
                                 Text("Count Down")
                             }
-                            Picker(
-                                selection: $cameraVM.selectedCountdown,
-                                label: Text("Select Duration")
-                            ) {
+                            Picker(selection: $cameraVM.selectedCountdown, label: Text("Select Duration")) {
                                 ForEach(1...15, id: \.self) {
                                     Text("\($0) seconds")
                                 }
@@ -61,7 +51,7 @@ struct SettingsView: View {
                         } header: {
                             Text("Recording Count Down")
                         }
-                        
+
                         Section {
                             Toggle(isOn: $inLine) {
                                 Text("In Line")
@@ -72,7 +62,7 @@ struct SettingsView: View {
                         } header: {
                             Text("In Line Text")
                         }
-                        
+
                         Section {
                             VStack(alignment: .center) {
                                 HStack {
@@ -97,16 +87,12 @@ struct SettingsView: View {
                                                         }
                                                     }
                                                     .onEnded { _ in
-                                                        withAnimation {
-                                                            opacity = 1.0
-                                                        }
+                                                        withAnimation { opacity = 1.0 }
                                                     }
                                             )
-                                        
                                     }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
-                                
                             }
                             Text("Long press for a quick preview of the background color")
                                 .font(.caption)
@@ -116,7 +102,7 @@ struct SettingsView: View {
                         }
                     }
                     .scrollContentBackground(.hidden)
-                    .opacity(opacity) // Apply opacity to entire Form
+                    .opacity(opacity)
                 }
                 .navigationTitle("Settings")
             }
@@ -126,6 +112,6 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environmentObject(VideoCameraViewModel())
-        .environmentObject(ContentViewModel())
+        .environment(VideoCameraViewModel())
+        .environment(ContentViewModel())
 }

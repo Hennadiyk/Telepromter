@@ -11,7 +11,7 @@ struct Arc: Shape {
     let startAngle: Angle
     let endAngle: Angle
     let clockwise: Bool
-    
+
     func path(in rect: CGRect) -> Path {
         var path = Path()
         path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: 42, startAngle: startAngle, endAngle: endAngle, clockwise: !clockwise)
@@ -20,14 +20,12 @@ struct Arc: Shape {
 }
 
 struct ResizeBar: View {
-    @EnvironmentObject private var cameraViewModel: VideoCameraViewModel
+    @Environment(VideoCameraViewModel.self) private var cameraViewModel
     @Binding var progress: Double
     @State private var lineAngle = 1.0
-    
+
     var body: some View {
         ZStack {
-            
-            
             // Dynamic waveform arc using audioLevel
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(80 - (80 * Double(min(cameraViewModel.audioLevel, 1)))),
@@ -41,21 +39,19 @@ struct ResizeBar: View {
                 style: StrokeStyle(lineWidth: 18, lineCap: .round, lineJoin: .round)
             )
             .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
-            
+
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(-1),
                 clockwise: false)
             .stroke(.ultraThinMaterial, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
-            
+
             // Progress arc
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(80 - (80 * min(progress, 1))),
                 clockwise: false)
             .stroke(.blue, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .onAppear {
-                withAnimation(.bouncy(duration: 2)) {
-                    lineAngle = 80
-                }
+                withAnimation(.bouncy(duration: 2)) { lineAngle = 80 }
             }
         }
         .frame(width: 100, height: 100)
@@ -64,5 +60,5 @@ struct ResizeBar: View {
 
 #Preview {
     ResizeBar(progress: .constant(0.5))
-        .environmentObject(VideoCameraViewModel())
+        .environment(VideoCameraViewModel())
 }

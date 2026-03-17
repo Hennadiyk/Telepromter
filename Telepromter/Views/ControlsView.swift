@@ -15,8 +15,8 @@ struct SizePreferenceKey: PreferenceKey {
 }
 
 struct ControlsView: View {
-    @EnvironmentObject var contentVM: ContentViewModel
-    @EnvironmentObject var cameraViewModel: VideoCameraViewModel
+    @Environment(ContentViewModel.self) var contentVM
+    @Environment(VideoCameraViewModel.self) var cameraViewModel
     @State private var currentAmountHeight: CGFloat = 0.0
     @State private var currentAmountWidth: CGFloat = 0.0
     @State private var finalAmountWidth: CGFloat = 300.0
@@ -28,11 +28,13 @@ struct ControlsView: View {
     @State private var showAlert = false
     @State private var hasDragged = false
     @State private var scrollProgress: Double = 0
-    
 
     var body: some View {
-        let dragGesture = DragGesture()
+        // Drag handles movement and always resets isDragging on finger-up,
+        // so a long-press with no drag never leaves the view stuck.
+        let dragGesture = DragGesture(minimumDistance: 0)
             .onChanged { value in
+                guard isDragging else { return }
                 offset = CGSize(width: lastOffset.width + value.translation.width, height: lastOffset.height + value.translation.height)
                 complexSuccess()
             }
@@ -43,60 +45,55 @@ struct ControlsView: View {
                 }
                 hasDragged = true
             }
-        
-        let pressGesture = LongPressGesture(minimumDuration: 0.3)
+
+        let pressGesture = LongPressGesture(minimumDuration: 0.4)
             .onEnded { _ in
                 complexSuccess()
-                withAnimation {
-                    isDragging = true
-                }
+                withAnimation { isDragging = true }
             }
-        
+
         let combined = pressGesture.sequenced(before: dragGesture)
-        
+
         ZStack {
             if !contentVM.videoOn {
                 BackgroundView()
             } else {
                 Color.clear
             }
-            
+
             if contentVM.videoOn {
                 CameraView(previewLayer: cameraViewModel.previewLayer)
                     .statusBar(hidden: true)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
-                    .onAppear {
-                        cameraViewModel.checkPermissions()
-                    }
-                    .onDisappear {
-                        cameraViewModel.stopSession()
-                    }
+                    .onAppear { cameraViewModel.checkPermissions() }
+                    .onDisappear { cameraViewModel.stopSession() }
             }
-            
+
             GeometryReader { geometry in
                 VStack(alignment: .trailing) {
                     PrompterView(scrollProgress: $scrollProgress)
                         .background(.ultraThinMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 40))
-                        .shadow(color: contentVM.videoOn ? .clear : (isDragging ? .black : .white), radius: 40)
+                        .shadow(color: contentVM.videoOn ? .clear : (isDragging ? .black : .white.opacity(0.5)), radius: 40)
                         .scaleEffect(isDragging ? 1.1 : 1)
                         .offset(offset)
                         .gesture(combined)
-                        .frame(width: currentAmountWidth > 0 ? currentAmountWidth : finalAmountWidth,
-                               height: currentAmountHeight > 0 ? currentAmountHeight : finalAmountHeight)
-                       
-                    
+                        .frame(
+                            width: currentAmountWidth > 0 ? currentAmountWidth : finalAmountWidth,
+                            height: currentAmountHeight > 0 ? currentAmountHeight : finalAmountHeight
+                        )
+
                     HStack(alignment: .top) {
                         HStack {
                             Button {
                                 simpleSuccess()
+                                @Bindable var contentVM = contentVM
                                 if contentVM.textInput.isEmpty {
                                     showAlert.toggle()
                                     contentVM.selectedTab = 0
                                 } else {
                                     contentVM.isPlaying.toggle()
-                                    simpleSuccess()
                                 }
                             } label: {
                                 PlayButton()
@@ -107,7 +104,7 @@ struct ControlsView: View {
                         .alert(isPresented: $showAlert) {
                             Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
                         }
-                        
+
                         ResizeBar(progress: $scrollProgress)
                             .clipped()
                             .foregroundStyle(Color.color.background)
@@ -136,15 +133,13 @@ struct ControlsView: View {
                     }
                 }
                 .opacity(isDragging ? 0.6 : 1)
-                
+
                 SpeedSizeButtons(fontSpeedBar: $fontSpeedBar)
                     .padding(.horizontal, 20)
-                
+
                 VideoButton()
                     .padding(.horizontal, 20)
-                
-                
-                
+
                 Color.clear
                     .preference(key: SizePreferenceKey.self, value: geometry.size)
             }
@@ -157,16 +152,14 @@ struct ControlsView: View {
             }
         }
         .onTapGesture {
-            withAnimation(.bouncy) {
-                fontSpeedBar = false
-            }
+            withAnimation(.bouncy) { fontSpeedBar = false }
         }
     }
 }
 
 #Preview {
     ControlsView()
-        .environmentObject(ContentViewModel())
-        .environmentObject(VideoCameraViewModel())
-        .environmentObject(PaywallViewModel())
+        .environment(ContentViewModel())
+        .environment(VideoCameraViewModel())
+        .environment(PaywallViewModel())
 }

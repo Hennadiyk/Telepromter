@@ -8,151 +8,155 @@
 import SwiftUI
 
 struct VideoButton: View {
-    @EnvironmentObject var contentVM: ContentViewModel
-    @EnvironmentObject var cameraViewModel: VideoCameraViewModel
-    @EnvironmentObject var paywallViewModel: PaywallViewModel
+    @Environment(ContentViewModel.self) var contentVM
+    @Environment(VideoCameraViewModel.self) var cameraViewModel
+    @Environment(PaywallViewModel.self) var paywallViewModel
     @State private var isPremium = false
     @State private var isMoving = 0.0
-    
+
     var body: some View {
+        @Bindable var paywallViewModel = paywallViewModel
         GeometryReader { geometry in
             let isLandscape = cameraViewModel.deviceOrientation.isLandscape
-            
             let buttonWidth: CGFloat = contentVM.videoOn ? geometry.size.width :
-            isLandscape ? 72.0 : 72.0  // Consistent fixed size, adapted by size class for larger screens
-            
+                isLandscape ? 72.0 : 72.0
+
             VStack {
-                
                 Spacer()
-                countDownTag
                 
                 HStack {
+                    HStack {
+                        // VIDEO BUTTON
                         HStack {
-                            // VIDEO BUTTON
-                            HStack {
-                                
-                                Button {
-                                    simpleSuccess()
-                                    if paywallViewModel.shouldShowPaywall() {
-                                        
-                                        paywallViewModel.isPresented = true
-                                    } else {
-                                        withAnimation(.bouncy) {
-                                            isPremium = false
-                                            contentVM.videoOn.toggle()
-                                            
-                                            if contentVM.videoOn {
-                                                cameraViewModel.checkPermissions()
-                                            } else {
-                                                cameraViewModel.stopSession()
-                                                cameraViewModel.audioLevel = 0.0
+                            Button {
+                                simpleSuccess()
+                                if paywallViewModel.shouldShowPaywall() {
+                                    paywallViewModel.isPresented = true
+                                } else {
+                                    withAnimation(.bouncy) {
+                                        isPremium = false
+                                        contentVM.videoOn.toggle()
+                                        if contentVM.videoOn {
+                                            cameraViewModel.checkPermissions()
+                                        } else {
+                                            // Stop recording cleanly before ending the session
+                                            if cameraViewModel.isRecording {
+                                                cameraViewModel.stopRecording()
                                             }
+                                            cameraViewModel.stopSession()
+                                            cameraViewModel.audioLevel = 0.0
                                         }
                                     }
-                                    
-                                } label: {
-                                    Image(systemName: "video")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.blue))
-                                        .padding(.horizontal, 22)
+                                }
+                            } label: {
+                                Image(systemName: "video")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.blue))
+                                    .padding(.horizontal, 22)
+                            }
+                        }
+
+                        // Thumbnail + Record controls
+                        HStack {
+                            HStack {
+                                if let thumbnail = cameraViewModel.lastVideoThumbnail,
+                                   let url = cameraViewModel.lastVideoLocalURL {
+                                    Button {
+                                        withAnimation(.easeInOut(duration: 2)) {
+                                            cameraViewModel.openInPhotosApp(videoURL: url)
+                                        }
+                                    } label: {
+                                        Image(uiImage: thumbnail)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 50, height: 50)
+                                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                                            .allowsHitTesting(contentVM.videoOn)
+                                    }
+                                } else {
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .fill(Color.white.opacity(0.5))
+                                        .frame(width: 50, height: 50)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 15)
+                                                .foregroundStyle(.ultraThinMaterial)
+                                        )
                                 }
                             }
-                            //Thumbnail View
-                            HStack {
-                                // Video Preview thumb
-                                HStack {
-                                    if let thumbnail = cameraViewModel.lastVideoThumbnail,
-                                       let url = cameraViewModel.lastVideoLocalURL {
-                                        Button {
-                                            withAnimation(.easeInOut(duration: 2)) {
-                                                cameraViewModel.openInPhotosApp(videoURL: url)
+                            .frame(width: geometry.size.width * 0.2)
+
+                            Spacer()
+
+                            // Record button
+                            Button {
+                                withAnimation(.easeInOut(duration: 1)) {
+                                    if contentVM.videoOn {
+                                        if cameraViewModel.isRecording {
+                                            // Stop recording — pause scrolling if active
+                                            if contentVM.isPlaying {
+                                                contentVM.isPlaying = false
                                             }
-                                        } label: {
-                                            Image(uiImage: thumbnail)
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 35, height: 35)
-                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                .allowsHitTesting(contentVM.videoOn)
+                                            cameraViewModel.stopRecording()
+                                        } else {
+                                            cameraViewModel.startRecording()
                                         }
-                                    } else {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.white.opacity(0.5))
-                                            .frame(width: 35, height: 35)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .foregroundStyle(.ultraThinMaterial)
-                                            )
                                     }
                                 }
-                                .frame(width: geometry.size.width * 0.2)
+                            } label: {
+                                //Countdown numbers
                                 
-                                Spacer()
-                                // Record button
-                                Button(action: {
-                                    withAnimation(.easeInOut(duration: 1)) {
-                                        if contentVM.videoOn {
-                                            cameraViewModel.toggleRecording()
-                                        }
-                                    }
-                                }) {
+                                if let countdownValue = cameraViewModel.countdown {
+                                    Text("\(countdownValue)")
+                                        .font(.largeTitle)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.red)
+                                        .padding()
+                                } else {
+                                    
                                     Image(systemName: cameraViewModel.isRecording ? "record.circle.fill" : "record.circle")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 45, height: 45)
+                                        .frame(width: 50, height: 50)
                                         .foregroundColor(cameraViewModel.isRecording ? Color.red : Color.color.text)
-                                        .padding(8)
                                 }
-                                
-                                Spacer()
-                                
-                                // Recording time
-                                HStack {
-                                    Text(timeString(from: cameraViewModel.recordingTime))
-                                        .font(.system(size: 20, weight: .semibold, design: .monospaced))
-                                        .foregroundStyle(cameraViewModel.isRecording ? Color.red : Color.color.text)
-                                }
-                                .frame(width: geometry.size.width * 0.2)
-                                
                             }
-                            // Camera switch button
+
+                            Spacer()
+
+                            // Recording time
                             HStack {
-                                
-                                Button(action: {
-                                    if contentVM.videoOn {
-                                        cameraViewModel.switchCamera()
-                                    }
-                                }) {
-                                    Image(systemName: "arrow.triangle.2.circlepath.camera")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundColor(Color.color.text)
-                                        .padding()
-                                    
-                                    
-                                }
-                                
+                                Text(timeString(from: cameraViewModel.recordingTime))
+                                    .font(.system(size: 25, weight: .semibold, design:.rounded))
+                                    .foregroundStyle(cameraViewModel.isRecording ? Color.red : Color.color.text)
                             }
-                            
+                            .frame(width: geometry.size.width * 0.2)
                         }
-                        .frame(height: 60)
-                        .frame(width: buttonWidth, alignment: .leading)
-                        
-                        .clipped()
-                        .applyIfAvailableGlassClear()
-                        .overlay {
-                            
-                            if paywallViewModel.shouldShowPaywall() {
-                                premiumTag
+
+                        // Camera switch button
+                        HStack {
+                            Button {
+                                if contentVM.videoOn { cameraViewModel.switchCamera() }
+                            } label: {
+                                Image(systemName: "arrow.triangle.2.circlepath.camera")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(Color.color.text)
+                                    .padding(.horizontal, 22)
                             }
-                            
                         }
+                    }
+                    .frame(height: 60)
+                    .frame(width: buttonWidth, alignment: .leading)
+                    .clipped()
+                    .applyIfAvailableGlassClear()
+                    .overlay {
+                        if paywallViewModel.shouldShowPaywall() { premiumTag }
+                    }
                 }
                 .padding(.bottom, 10)
-                
             }
             .sheet(isPresented: $paywallViewModel.isPresented) {
                 PaywallView()
@@ -163,9 +167,9 @@ struct VideoButton: View {
 
 #Preview {
     VideoButton()
-        .environmentObject(ContentViewModel())
-        .environmentObject(VideoCameraViewModel())
-        .environmentObject(PaywallViewModel())
+        .environment(ContentViewModel())
+        .environment(VideoCameraViewModel())
+        .environment(PaywallViewModel())
 }
 
 extension View {
@@ -174,46 +178,22 @@ extension View {
         if #available(iOS 26.0, *) {
             self.glassEffect()
         } else {
-            self.background(RoundedRectangle(cornerRadius: 30)
-                .fill(Color.gray.opacity(0.2)))
+            self.background(RoundedRectangle(cornerRadius: 30).fill(Color.gray.opacity(0.2)))
         }
     }
 }
 
-//Premium Tag
 extension VideoButton {
-    
     var premiumTag: some View {
-        
-        //Premium tab on VideoButton
         Circle()
             .fill(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .bottomLeading, endPoint: .bottomTrailing))
             .frame(width: 18, height: 189)
-        
             .overlay(
-                
                 Text("P")
                     .bold()
                     .foregroundStyle(Color.color.background)
                     .font(.caption)
-                
-                
-            ).offset(x: 20, y: -20)
+            )
+            .offset(x: 20, y: -20)
     }
-    
-    // Pre-recording countdown
-    var countDownTag: some View {
-        Group {
-            if let countdownValue = cameraViewModel.countdown {
-                Text("\(countdownValue)")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.red)
-                    .padding()
-            } else {
-                EmptyView()
-            }
-        }
-    }
-    
 }
