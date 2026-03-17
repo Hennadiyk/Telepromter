@@ -20,8 +20,8 @@ struct Arc: Shape {
 }
 
 struct ResizeBar: View {
-    @EnvironmentObject private var contentVM: ContentViewModel
     @EnvironmentObject private var cameraViewModel: VideoCameraViewModel
+    @Binding var progress: Double
     @State private var lineAngle = 1.0
     
     var body: some View {
@@ -47,9 +47,9 @@ struct ResizeBar: View {
                 clockwise: false)
             .stroke(.ultraThinMaterial, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             
-            // Progress arc based on contentVM.progress
+            // Progress arc
             Arc(startAngle: .degrees(80),
-                endAngle: .degrees(80 - (80 * min(contentVM.progress, 1))),
+                endAngle: .degrees(80 - (80 * min(progress, 1))),
                 clockwise: false)
             .stroke(.blue, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .onAppear {
@@ -63,7 +63,6 @@ struct ResizeBar: View {
 }
 
 #Preview {
-    ResizeBar()
-        .environmentObject(ContentViewModel())
+    ResizeBar(progress: .constant(0.5))
         .environmentObject(VideoCameraViewModel())
 }

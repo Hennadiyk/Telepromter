@@ -27,6 +27,7 @@ struct ControlsView: View {
     @State private var fontSpeedBar = false
     @State private var showAlert = false
     @State private var hasDragged = false
+    @State private var scrollProgress: Double = 0
     
 
     var body: some View {
@@ -63,7 +64,7 @@ struct ControlsView: View {
             if contentVM.videoOn {
                 CameraView(previewLayer: cameraViewModel.previewLayer)
                     .statusBar(hidden: true)
-                    .ignoresSafeArea(edges: [.top, .trailing, .leading])
+                    .ignoresSafeArea()
                     .allowsHitTesting(false)
                     .onAppear {
                         cameraViewModel.checkPermissions()
@@ -75,7 +76,7 @@ struct ControlsView: View {
             
             GeometryReader { geometry in
                 VStack(alignment: .trailing) {
-                    PrompterView()
+                    PrompterView(scrollProgress: $scrollProgress)
                         .background(.ultraThinMaterial)
                         .clipShape(RoundedRectangle(cornerRadius: 40))
                         .shadow(color: contentVM.videoOn ? .clear : (isDragging ? .black : .white), radius: 40)
@@ -107,7 +108,7 @@ struct ControlsView: View {
                             Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
                         }
                         
-                        ResizeBar()
+                        ResizeBar(progress: $scrollProgress)
                             .clipped()
                             .foregroundStyle(Color.color.background)
                             .offset(x: offset.width + (isDragging ? 28 : 18), y: offset.height + (isDragging ? -85 : -86))
