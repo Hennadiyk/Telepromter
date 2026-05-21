@@ -36,7 +36,7 @@ struct ResizeBar: View {
                     startPoint: .leading,
                     endPoint: .trailing
                 ),
-                style: StrokeStyle(lineWidth: 18, lineCap: .round, lineJoin: .round)
+                style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round)
             )
             .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
 
@@ -49,12 +49,12 @@ struct ResizeBar: View {
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(80 - (80 * min(progress, 1))),
                 clockwise: false)
-            .stroke(Color.color.gradientHigh, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
+            .stroke(Color.color.gradientLow, style: StrokeStyle(lineWidth: 15, lineCap: .round, lineJoin: .round))
             .onAppear {
                 withAnimation(.bouncy(duration: 2)) { lineAngle = 80 }
             }
         }
-        .frame(width: 100, height: 100)
+        .frame(width: 105, height: 105)
     }
 }
 

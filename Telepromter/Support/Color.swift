@@ -70,7 +70,7 @@ enum themeSwitching: String, CaseIterable, Identifiable {
             case .white: return Color(.black)
             case .pink: return Color(.pink)
             case .teal: return Color(.teal)
-            case .blue: return Color(.yellow)
+            case .blue: return Color(.orange)
             case .red: return Color(.red)
                 
         }

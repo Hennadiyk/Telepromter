@@ -32,9 +32,9 @@ struct PlayButton: View {
                         .foregroundStyle(.white)
                 }
                 .frame(width: 80, height: 15)
-                .foregroundStyle(Color.color.gradientHigh)
+                .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
         }
-        .frame(width: 100, height: 100)
+        .frame(width: 105, height: 105)
     }
 }
 

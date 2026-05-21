@@ -11,7 +11,7 @@ struct SettingsView: View {
     @Environment(VideoCameraViewModel.self) var cameraVM
     @Environment(ContentViewModel.self) var contentVM
     @AppStorage("inLine") var inLine: Bool = false
-    @AppStorage("themeColor") var themeColor: themeSwitching = .teal
+    @AppStorage("themeColor") var themeColor: themeSwitching = .blue
     @State private var opacity: Double = 1
 
     var body: some View {

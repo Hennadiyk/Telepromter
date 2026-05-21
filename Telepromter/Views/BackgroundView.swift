@@ -10,7 +10,7 @@ import SwiftUI
 struct BackgroundView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var motion = MotionManager()
-    @AppStorage("themeColor") var themeColor: themeSwitching = .teal
+    @AppStorage("themeColor") var themeColor: themeSwitching = .white
 
     var body: some View {
         GeometryReader { proxy in

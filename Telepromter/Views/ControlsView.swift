@@ -30,6 +30,7 @@ struct ControlsView: View {
     @State private var scrollProgress: Double = 0
 
     var body: some View {
+        @Bindable var cameraViewModel = cameraViewModel
         // Drag handles movement and always resets isDragging on finger-up,
         // so a long-press with no drag never leaves the view stuck.
         let dragGesture = DragGesture(minimumDistance: 0)
@@ -99,7 +100,7 @@ struct ControlsView: View {
                                 PlayButton()
                             }
                         }
-                        .offset(x: offset.width + 72, y: offset.height + (isDragging ? -33 : -43))
+                        .offset(x: offset.width + 82, y: offset.height + (isDragging ? -53 : -43))
                         .opacity(isDragging ? 0 : 1)
                         .alert(isPresented: $showAlert) {
                             Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
@@ -108,7 +109,7 @@ struct ControlsView: View {
                         ResizeBar(progress: $scrollProgress)
                             .clipped()
                             .foregroundStyle(Color.color.background)
-                            .offset(x: offset.width + (isDragging ? 28 : 18), y: offset.height + (isDragging ? -85 : -86))
+                            .offset(x: offset.width + (isDragging ? 18 : 26), y: offset.height + (isDragging ? -96 : -86))
                             .opacity(isDragging ? 0 : 1)
                             .gesture(
                                 DragGesture()
@@ -130,19 +131,19 @@ struct ControlsView: View {
                                         }
                                     }
                             )
+                            
                     }
                 }
                 .opacity(isDragging ? 0.6 : 1)
+                
 
-                SpeedSizeButtons(fontSpeedBar: $fontSpeedBar)
-                    .padding(.horizontal, 20)
-
-                VideoButton()
+                VideoButton(fontSpeedBar: $fontSpeedBar)
                     .padding(.horizontal, 20)
 
                 Color.clear
                     .preference(key: SizePreferenceKey.self, value: geometry.size)
             }
+           
             .onPreferenceChange(SizePreferenceKey.self) { newSize in
                 if !hasDragged {
                     let topPadding: CGFloat = 20.0
@@ -153,6 +154,9 @@ struct ControlsView: View {
         }
         .onTapGesture {
             withAnimation(.bouncy) { fontSpeedBar = false }
+        }
+        .alert(cameraViewModel.alertMessage, isPresented: $cameraViewModel.showAlert) {
+            Button("OK", role: .cancel) {}
         }
     }
 }

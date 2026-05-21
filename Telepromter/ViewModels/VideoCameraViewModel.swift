@@ -26,6 +26,7 @@ final class VideoCameraViewModel: NSObject {
     var lastVideoLocalURL: URL?
     var deviceOrientation: UIDeviceOrientation = .unknown
     var audioLevel: Float = 0.0
+    var videoSavedToPhotos = false
     var audioLevelsBuffer: [Float] = Array(repeating: 0.0, count: 40)
 
     /// Frame rates actually supported by the front camera at the selected resolution.
@@ -46,18 +47,18 @@ final class VideoCameraViewModel: NSObject {
     // nonisolated(unsafe) because it is read from @Sendable NotificationCenter closures on the main queue
     @ObservationIgnored nonisolated(unsafe) private var userWantsSessionRunning = false
 
-    var selectedResolution: VideoResolution = .hd1080 {
+    var selectedResolution: VideoResolution = .uhd4K {
         didSet {
             UserDefaults.standard.set(selectedResolution.rawValue, forKey: "selectedResolution")
             // Clamp frame rate if no longer supported at the new resolution
             if !supportedFrameRates.contains(selectedFrameRate) {
-                selectedFrameRate = supportedFrameRates.last ?? .fps30
+                selectedFrameRate = supportedFrameRates.last ?? .fps60
             } else {
                 updateCameraSettings()
             }
         }
     }
-    var selectedFrameRate: FrameRate = .fps30 {
+    var selectedFrameRate: FrameRate = .fps60 {
         didSet {
             UserDefaults.standard.set(selectedFrameRate.rawValue, forKey: "selectedFrameRate")
             updateCameraSettings()
@@ -195,6 +196,7 @@ final class VideoCameraViewModel: NSObject {
         let resolutionName = selectedResolution.rawValue
 
         if videoStatus == .authorized && audioStatus == .authorized {
+            userWantsSessionRunning = true
             sessionQueue.async { [weak self] in
                 self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
                 self?.startSessionOnSessionQueue()
@@ -204,6 +206,7 @@ final class VideoCameraViewModel: NSObject {
                 Task { @MainActor [weak self] in
                     guard let self else { return }
                     if granted {
+                        self.userWantsSessionRunning = true
                         self.sessionQueue.async { [weak self] in
                             self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
                             self?.startSessionOnSessionQueue()
@@ -217,10 +220,10 @@ final class VideoCameraViewModel: NSObject {
             postAlert(message: "Camera or microphone access denied")
         }
 
-        PHPhotoLibrary.requestAuthorization { [weak self] status in
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { [weak self] status in
             Task { @MainActor [weak self] in
-                if status != .authorized {
-                    self?.postAlert(message: "Photo Library access denied")
+                if status == .denied || status == .restricted {
+                    self?.postAlert(message: "Photo Library access denied. Please enable in Settings.")
                 }
             }
         }
@@ -295,7 +298,7 @@ final class VideoCameraViewModel: NSObject {
                 if success {
                     self.lastVideoLocalURL = outputFileURL
                     self.generateThumbnail(for: outputFileURL)
-                    self.postAlert(message: "Video saved to Photos")
+                    self.videoSavedToPhotos = true
                 } else {
                     self.postAlert(message: "Failed to save video: \(error?.localizedDescription ?? "Unknown error")")
                 }
@@ -337,14 +340,41 @@ final class VideoCameraViewModel: NSObject {
     }
 
     nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let channel = connection.audioChannels.first else { return }
-        let power = channel.averagePowerLevel
-        let normalizedLevel = min(1.0, pow(10, power / 20) * 4)
+        guard let formatDesc = CMSampleBufferGetFormatDescription(sampleBuffer),
+              let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDesc)?.pointee,
+              let dataBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) else { return }
+
+        let byteCount = CMBlockBufferGetDataLength(dataBuffer)
+        guard byteCount > 0 else { return }
+
+        var bytes = [UInt8](repeating: 0, count: byteCount)
+        guard CMBlockBufferCopyDataBytes(dataBuffer, atOffset: 0, dataLength: byteCount, destination: &bytes) == kCMBlockBufferNoErr else { return }
+
+        let isFloat = asbd.mFormatFlags & kAudioFormatFlagIsFloat != 0
+        let rms: Float
+
+        if isFloat {
+            let count = byteCount / MemoryLayout<Float32>.size
+            guard count > 0 else { return }
+            let sum = bytes.withUnsafeBytes { ptr in
+                ptr.bindMemory(to: Float32.self).reduce(0 as Float) { $0 + $1 * $1 }
+            }
+            rms = sqrt(sum / Float(count))
+        } else {
+            let count = byteCount / MemoryLayout<Int16>.size
+            guard count > 0 else { return }
+            let sum = bytes.withUnsafeBytes { ptr in
+                ptr.bindMemory(to: Int16.self).reduce(0 as Float) { $0 + Float($1) * Float($1) }
+            }
+            rms = sqrt(sum / Float(count)) / Float(Int16.max)
+        }
+
+        let level = min(1.0, rms * 8)
 
         Task { @MainActor [weak self] in
             guard let self else { return }
-            self.audioLevel = normalizedLevel
-            self.audioLevelsBuffer.append(normalizedLevel)
+            self.audioLevel = level
+            self.audioLevelsBuffer.append(level)
             if self.audioLevelsBuffer.count > 40 {
                 self.audioLevelsBuffer.removeFirst()
             }
@@ -371,6 +401,11 @@ final class VideoCameraViewModel: NSObject {
         captureSession.beginConfiguration()
         defer { captureSession.commitConfiguration() }
 
+        for input in captureSession.inputs { captureSession.removeInput(input) }
+        for output in captureSession.outputs { captureSession.removeOutput(output) }
+        currentInput = nil
+        currentCamera = nil
+
         // Use .inputPriority for all cases so we can set activeFormat directly.
         // Setting device.activeFormat (done in configureCameraSettingsOnSessionQueue) automatically
         // switches the session preset to .inputPriority — we set it here proactively to avoid
@@ -384,13 +419,12 @@ final class VideoCameraViewModel: NSObject {
             try audioSession.setActive(true)
             let availableInputs = audioSession.availableInputs ?? []
             if let bluetoothInput = availableInputs.first(where: { $0.portType == .bluetoothHFP }) {
-                try audioSession.setPreferredInput(bluetoothInput)
+                try? audioSession.setPreferredInput(bluetoothInput)
             }
         } catch {
-            Task { @MainActor [weak self] in
-                self?.postAlert(message: "Failed to configure audio session for Bluetooth: \(error.localizedDescription)")
-            }
-            return
+            // Bluetooth setup failed — fall back to basic audio session and continue
+            try? audioSession.setCategory(.playAndRecord, mode: .videoRecording, options: [.defaultToSpeaker])
+            try? audioSession.setActive(true)
         }
 
         guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
