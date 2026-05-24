@@ -17,22 +17,26 @@ struct VideoButton: View {
     @State private var opacity: Double = 1.0
     @State private var speedOpacity: Double = 0.0
     
-    @AppStorage("textSize") private var textSize: Int = 3
-    @AppStorage("speedValue") private var speedValue: Double = 2.5
-   
+    @AppStorage("textSize") private var textSize: Int = 4
+    @AppStorage("speedValue") private var speedValue: Double = 3
+    
     @Binding var fontSpeedBar: Bool
-
-
+    
+    
     var body: some View {
         @Bindable var paywallViewModel = paywallViewModel
+        @Bindable var cameraViewModel = cameraViewModel
         GeometryReader { geometry in
             let isLandscape = cameraViewModel.deviceOrientation.isLandscape
             let buttonWidth: CGFloat = contentVM.videoOn ? geometry.size.width :
-                isLandscape ? 72.0 : 0.0
-            let buttonHeight: CGFloat = contentVM.videoOn ? 120 : 0
-
+            isLandscape ? 72.0 : 0.0
+            let hasZoomOptions = !cameraViewModel.isFrontCamera && !cameraViewModel.availableZoomOptions.isEmpty
+            let buttonHeight: CGFloat = contentVM.videoOn ? (hasZoomOptions ? 160 : 120) : 0
+            
             VStack(alignment: .leading) {
                 Spacer()
+                
+                // SIZE AND SPEED OF TEXT SECTION ========================================================
                 HStack {
                     HStack {
                         HStack {
@@ -85,34 +89,34 @@ struct VideoButton: View {
                             }
                             .disabled(textSize <= 1)
                             
-                            Spacer()
                             
+                        }
+                        
+                        Spacer()
+                        
+                        HStack{
                             Image(systemName: "textformat.size")
                                 .font(.custom("Arial", size: 16))
                                 .foregroundStyle(Color.color.text)
-                                .onTapGesture {
-                                    withAnimation(.bouncy) { fontSpeedBar.toggle() }
-                                }
-                        }
-                        
-                        Divider()
-                            .onTapGesture {
-                                withAnimation(.bouncy) { fontSpeedBar.toggle() }
-                            }
-                        
-                        HStack {
+                            
+                            Divider()
+                            
                             Image(systemName: "figure.run")
                                 .font(.custom("Arial", size: 16))
                                 .foregroundStyle(Color.color.text)
-                                .onTapGesture {
-                                    withAnimation(.bouncy) { fontSpeedBar.toggle() }
-                                }
                             
+                        }.onTapGesture {
+                            withAnimation(.bouncy) { fontSpeedBar.toggle() }
+                        }
+                        
+                        Spacer()
+                        
+                        HStack {
                             // Minus button — decrease speed
                             Button {
                                 simpleSuccess()
                                 withAnimation(.smooth) {
-                                    speedValue = max(speedValue - 0.5, 0.5)
+                                    speedValue = max(round(speedValue) - 1, 1)
                                     contentVM.scrollSpeed = Double(speedValue * 5)
                                     speedOpacity = 0.8
                                 }
@@ -127,19 +131,20 @@ struct VideoButton: View {
                                     .foregroundStyle(Color.color.text)
                                     .frame(width: 30, height: 30)
                             }
+                            .disabled(round(speedValue) <= 1)
                             
-                            Text(String(format: "%.1f", speedValue))
+                            Text("\(Int(round(speedValue)))")
                                 .font(.system(size: 35))
                                 .frame(width: 54)
                                 .bold()
                                 .opacity(1)
-                                .foregroundStyle(speedValue >= 6 ? .orange : Color.color.text)
+                                .foregroundStyle(round(speedValue) >= 10 ? .orange : Color.color.text)
                             
                             // Plus button — increase speed
                             Button {
+                                simpleSuccess()
                                 withAnimation(.smooth) {
-                                    simpleSuccess()
-                                    speedValue = min(speedValue + 0.5, 6)
+                                    speedValue = min(round(speedValue) + 1, 10)
                                     contentVM.scrollSpeed = Double(speedValue * 5)
                                     speedOpacity = 0.8
                                 }
@@ -155,82 +160,177 @@ struct VideoButton: View {
                                     .frame(width: 30, height: 30)
                             }
                             .padding(.vertical, 4)
-                            .disabled(speedValue >= 6)
+                            .disabled(round(speedValue) >= 10)
                         }
                     }
-                    .frame(width: fontSpeedBar ? 340 : 48, height: 25)
-                    .padding(12)
+                    .frame(width: fontSpeedBar ? geometry.size.width - 30 : 48, height: 25)
+                    .padding(15)
                     .applyIfAvailableGlassClear()
                     .cornerRadius(30)
+                  
                     
                     Spacer()
                 }
+                // SIZE AND SPEED OF TEXT SECTION END ========================================================
+                
+                
+                //VIDEO BUTTON ON/OFF
                 HStack{
-                // VIDEO BUTTON
-                Button {
-                    simpleSuccess()
-                    if !paywallViewModel.shouldShowPaywall() {
-                        paywallViewModel.isPresented = true
-                    } else {
-                        withAnimation(.bouncy) {
-                            isPremium = false
-                            contentVM.videoOn.toggle()
-                            if !contentVM.videoOn {
-                                if cameraViewModel.isRecording {
-                                    cameraViewModel.stopRecording()
+                    Button {
+                        simpleSuccess()
+                        if paywallViewModel.shouldShowPaywall() {
+                            paywallViewModel.isPresented = true
+                        } else {
+                            withAnimation(.bouncy) {
+                                isPremium = false
+                                contentVM.videoOn.toggle()
+                                if !contentVM.videoOn {
+                                    if cameraViewModel.isRecording {
+                                        cameraViewModel.stopRecording()
+                                    }
+                                    cameraViewModel.stopSession()
+                                    cameraViewModel.audioLevel = 0.0
                                 }
-                                cameraViewModel.stopSession()
-                                cameraViewModel.audioLevel = 0.0
                             }
                         }
-                    }
-                } label: {
-                    Image(systemName: "video")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.black))
+                    } label: {
+                        Image(systemName: "video")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.black))
                         
-                       
-                }
-                }
-                .frame(width: 72, height: 60, alignment: .center)
-                    .applyIfAvailableGlassClear()
-                    .overlay {
-                        if paywallViewModel.shouldShowPaywall() { premiumTag }
+                        
                     }
-               
+                }
+                .frame(width: 78, height: 55, alignment: .center)
+                .applyIfAvailableGlassClear()
+                .overlay {
+                    if paywallViewModel.shouldShowPaywall() { premiumTag }
+                }
+                
+                //VIDEO BUTTON ON/OFF END
+                
                 HStack {
                     VStack{
-                    // Timer clock
-                        //Countdown numbers
+                        HStack{
+                        // Countdown numbers
                         if let countdownValue = cameraViewModel.countdown {
                             Text("\(countdownValue)")
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
+                                .font(.system(size: 35, weight: .semibold, design:.rounded))
                                 .foregroundColor(.red)
-                                
-                        } else {
                             
+                        } else {
+                            // Timer clock
                             Text(timeString(from: cameraViewModel.recordingTime))
-                                .font(.system(size: 25, weight: .semibold, design:.rounded))
+                                .font(.system(size: 35, weight: .semibold, design:.rounded))
                                 .foregroundStyle(cameraViewModel.isRecording ? Color.red : Color.color.text)
                         }
-                        
-                        Divider()
-                            .padding(.horizontal, 60)
-                        
-                        HStack(spacing: 20){
-                        
-                        // Quality placeholder
-                        RoundedRectangle(cornerRadius: 12)
-                            .frame(width: 45, height: 45)
-                        
-                        
-                        if contentVM.videoOn {
-                            // Thumbnail + Record controls
-                           
-                                if let thumbnail = cameraViewModel.lastVideoThumbnail,
+                    }
+                        .frame(height: 30)
+                       
+                        ZStack {
+                            Capsule()
+                                .stroke(lineWidth: 0.5)
+                                .fill(.secondary.opacity(0.25))
+                                .frame(height: 3)
+                                
+                            LinearGradient(
+                                colors: [.orange, .green, .green, .orange],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                            .frame(height: 1.5)
+                            .clipShape(Capsule())
+                            .scaleEffect(x: CGFloat(min(Double(cameraViewModel.audioLevel), 1.0)), y: 1, anchor: .center)
+                            .blur(radius: 1)
+                        }
+                        .clipped()
+                        .padding(.horizontal, 20)
+                        .animation(.easeOut(duration: 0.3), value: cameraViewModel.audioLevel)
+                            
+                        // Zoom buttons — back camera only
+                        if !cameraViewModel.isFrontCamera && !cameraViewModel.availableZoomOptions.isEmpty {
+                            HStack(spacing: 4) {
+                                ForEach(cameraViewModel.availableZoomOptions) { option in
+                                    Button {
+                                        cameraViewModel.setZoom(option.factor)
+                                    } label: {
+                                        let isSelected = abs(cameraViewModel.selectedZoomFactor - option.factor) < 0.01
+                                        Text(option.label)
+                                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                            .foregroundStyle(isSelected ? Color.black : Color.color.text)
+                                            .frame(width: 40, height: 28)
+                                            .background(
+                                                Capsule()
+                                                    .fill(isSelected ? Color.yellow.opacity(0.9) : Color.clear)
+                                            )
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 8)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
+
+                        HStack(spacing: 30){
+
+                            // Resolution + FPS picker
+                            Menu {
+                                ForEach(VideoResolution.allCases) { res in
+                                    Button {
+                                        cameraViewModel.selectedResolution = res
+                                        cameraViewModel.restartSession()
+                                    } label: {
+                                        if cameraViewModel.selectedResolution == res {
+                                            Label(res.label, systemImage: "checkmark")
+                                        } else {
+                                            Text(res.label)
+                                        }
+                                    }
+                                }
+                                Divider()
+                                ForEach(cameraViewModel.supportedFrameRates) { rate in
+                                    Button {
+                                        cameraViewModel.selectedFrameRate = rate
+                                    } label: {
+                                        if cameraViewModel.selectedFrameRate == rate {
+                                            Label("\(rate.rawValue) fps", systemImage: "checkmark")
+                                        } else {
+                                            Text("\(rate.rawValue) fps")
+                                        }
+                                    }
+                                }
+                            } label: {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .foregroundStyle(.clear)
+                                    .frame(width: 30, height: 30)
+                                    .overlay {
+                                        VStack(spacing: -1) {
+                                            Text(cameraViewModel.selectedResolution.label)
+                                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                            Text("\(cameraViewModel.selectedFrameRate.rawValue)")
+                                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                                        }
+                                        .foregroundStyle(Color.color.text)
+                                    }
+                            }
+                            .disabled(cameraViewModel.isRecording)
+                            
+                            
+                            if contentVM.videoOn {
+                                // Thumbnail + Record controls
+                                
+                                if cameraViewModel.isSavingVideo {
+                                    VStack(spacing: 3) {
+                                        ProgressView()
+                                            .tint(Color.color.text)
+                                            .frame(width: 30, height: 30)
+                                        Text("Saving")
+                                            .font(.system(size: 9, weight: .medium, design: .rounded))
+                                            .foregroundStyle(Color.color.text)
+                                    }
+                                    .frame(width: 45, height: 45)
+                                } else if let thumbnail = cameraViewModel.lastVideoThumbnail,
                                    let url = cameraViewModel.lastVideoLocalURL {
                                     Button {
                                         showSavedLabel = false
@@ -258,7 +358,7 @@ struct VideoButton: View {
                                                 .foregroundStyle(.ultraThinMaterial)
                                         )
                                 }
-
+                                
                                 // Record button
                                 Button {
                                     withAnimation(.easeInOut(duration: 1)) {
@@ -278,40 +378,70 @@ struct VideoButton: View {
                                     Image(systemName: cameraViewModel.isRecording ? "circle.fill" : "circle")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 50, height: 50)
+                                        .frame(width: 55, height: 55)
                                         .foregroundColor(cameraViewModel.isRecording ? Color.red : Color.color.text)
                                 }
-
-                               
-
-                                // Aspect Ratio placeholder
-                                RoundedRectangle(cornerRadius: 12)
-                                    .frame(width: 45, height: 45)
-                           
-
-                            // Front/Back camera switch button
-                            Button {
-                                cameraViewModel.switchCamera()
-                            } label: {
-                                Image(systemName: "arrow.triangle.2.circlepath.camera")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 45, height: 45)
-                                    .foregroundColor(Color.color.text)
+                                
+                                
+                                
+                                // Aspect ratio picker
+                                Menu {
+                                    Button {
+                                        cameraViewModel.showAspectGuides.toggle()
+                                    } label: {
+                                        Label(
+                                            cameraViewModel.showAspectGuides ? "Hide Guides" : "Show Guides",
+                                            systemImage: cameraViewModel.showAspectGuides ? "rectangle.dashed.badge.record" : "rectangle.dashed"
+                                        )
+                                    }
+                                    Divider()
+                                    ForEach(VideoAspectRatio.allCases) { ratio in
+                                        Button {
+                                            cameraViewModel.selectedAspectRatio = ratio
+                                        } label: {
+                                            if cameraViewModel.selectedAspectRatio == ratio {
+                                                Label(ratio.label, systemImage: "checkmark")
+                                            } else {
+                                                Text(ratio.label)
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .foregroundStyle(.clear)
+                                        .frame(width: 45, height: 45)
+                                        .overlay {
+                                            Text(cameraViewModel.selectedAspectRatio.label)
+                                                .font(.system(size: 14, weight: .bold, design: .rounded))
+                                                .foregroundStyle(Color.color.text)
+                                        }
+                                }
+                                .disabled(cameraViewModel.isRecording)
+                                
+                                
+                                // Front/Back camera switch button
+                                Button {
+                                    cameraViewModel.switchCamera()
+                                } label: {
+                                    Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(Color.color.text)
+                                }
+                            } else {
+                                Spacer()
                             }
-                        } else {
-                            Spacer()
                         }
+                        
                     }
-                  
-                  
-                    }
-                    .frame(width: buttonWidth, height: buttonHeight, alignment: .leading)
-                    .clipped()
-                    .applyIfAvailableGlassClear()
+                    
                 }
-                //.padding(.bottom, 10)
-               
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: hasZoomOptions)
+                .frame(width: buttonWidth, height: buttonHeight, alignment: .leading)
+                .clipped()
+                .applyIfAvailableGlassClear()
+                
             }
             .sheet(isPresented: $paywallViewModel.isPresented) {
                 PaywallView()

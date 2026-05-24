@@ -8,11 +8,25 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @AppStorage("isOnboardingComplete") private var isOnboardingComplete: Bool = false
+
     var body: some View {
         TabView {
             OnboardingPage1()
             OnboardingPage2()
-            PaywallView()
+            ZStack(alignment: .bottom) {
+                PaywallView()
+                Button {
+                    isOnboardingComplete = true
+                } label: {
+                    Text("Continue to Free Version")
+                        .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
+                }
+                .font(.subheadline)
+                .padding(.bottom, 40)
+               // .buttonStyle(.bordered)
+                
+            }
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))

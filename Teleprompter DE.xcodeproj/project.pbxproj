@@ -29,6 +29,7 @@
 		F14B83EE2DFB5E9E00471FA7 /* VideoCameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83ED2DFB5E9E00471FA7 /* VideoCameraViewModel.swift */; };
 		F14B83F02DFB5F6500471FA7 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83EF2DFB5F6500471FA7 /* CameraView.swift */; };
 		F14B83F42DFB9E9400471FA7 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B83F32DFB9E8D00471FA7 /* Helper.swift */; };
+		F1715C792FC39821009FEDB6 /* LevelIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1715C782FC39820009FEDB6 /* LevelIndicatorView.swift */; };
 		F18A5DF82E2B20F800A88F7F /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18A5DF72E2B20F800A88F7F /* PaywallView.swift */; };
 		F18A5DFA2E2EF8B500A88F7F /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18A5DF92E2EF8AB00A88F7F /* PaywallViewModel.swift */; };
 		F18A5DFF2E2F639000A88F7F /* Teleprompter DE.storekit in Resources */ = {isa = PBXBuildFile; fileRef = F18A5DFE2E2F639000A88F7F /* Teleprompter DE.storekit */; };
@@ -40,7 +41,6 @@
 		F1B476DE2F68DFBA003EA1D7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = F1B476DD2F68DFBA003EA1D7 /* FirebaseDatabase */; };
 		F1B476E02F68DFBA003EA1D7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F1B476DF2F68DFBA003EA1D7 /* FirebaseFirestore */; };
 		F1B476E22F68DFBA003EA1D7 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = F1B476E12F68DFBA003EA1D7 /* FirebaseStorage */; };
-		F1EF1B872E14FB6F000A8B9E /* SpeedSizeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B862E14FB6F000A8B9E /* SpeedSizeButtons.swift */; };
 		F1EF1B8B2E160016000A8B9E /* VideoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B8A2E160016000A8B9E /* VideoButton.swift */; };
 		F1EF1B8D2E160256000A8B9E /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EF1B8C2E160256000A8B9E /* PlayButton.swift */; };
 /* End PBXBuildFile section */
@@ -70,6 +70,7 @@
 		F14B83EF2DFB5F6500471FA7 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		F14B83F32DFB9E8D00471FA7 /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		F16134252CB4B4C000B7450B /* Teleprompter DE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Teleprompter DE.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1715C782FC39820009FEDB6 /* LevelIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelIndicatorView.swift; sourceTree = "<group>"; };
 		F18A5DF72E2B20F800A88F7F /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		F18A5DF92E2EF8AB00A88F7F /* PaywallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewModel.swift; sourceTree = "<group>"; };
 		F18A5DFE2E2F639000A88F7F /* Teleprompter DE.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Teleprompter DE.storekit"; sourceTree = "<group>"; };
@@ -79,7 +80,6 @@
 		F19A86EC2E2A12F800793DC3 /* AccountDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDetailsView.swift; sourceTree = "<group>"; };
 		F19A86F22E2A263500793DC3 /* FeatureRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureRequestView.swift; sourceTree = "<group>"; };
 		F19A86FA2E2ACFC400793DC3 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		F1EF1B862E14FB6F000A8B9E /* SpeedSizeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedSizeButtons.swift; sourceTree = "<group>"; };
 		F1EF1B8A2E160016000A8B9E /* VideoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoButton.swift; sourceTree = "<group>"; };
 		F1EF1B8C2E160256000A8B9E /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,7 +145,6 @@
 				F1EF1B8A2E160016000A8B9E /* VideoButton.swift */,
 				F10871562CD8B55C00A3987E /* ResizeBar.swift */,
 				F1EF1B8C2E160256000A8B9E /* PlayButton.swift */,
-				F1EF1B862E14FB6F000A8B9E /* SpeedSizeButtons.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -166,6 +165,7 @@
 				F19A86F22E2A263500793DC3 /* FeatureRequestView.swift */,
 				F18A5DF72E2B20F800A88F7F /* PaywallView.swift */,
 				F142BFB12E380F9A00CA294D /* OnboardingView.swift */,
+				F1715C782FC39820009FEDB6 /* LevelIndicatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -313,7 +313,6 @@
 				F19A86ED2E2A12F800793DC3 /* AccountDetailsView.swift in Sources */,
 				F117D5AB2E136DA00048C2B7 /* ContentView.swift in Sources */,
 				F19A86E62E27734E00793DC3 /* DocumentPicker.swift in Sources */,
-				F1EF1B872E14FB6F000A8B9E /* SpeedSizeButtons.swift in Sources */,
 				F10871572CD8B55C00A3987E /* ResizeBar.swift in Sources */,
 				F1439DA22CC9F8E3000BD920 /* ControlsView.swift in Sources */,
 				F1EF1B8D2E160256000A8B9E /* PlayButton.swift in Sources */,
@@ -322,6 +321,7 @@
 				F1439DA62CC9F8E3000BD920 /* TelepromterApp.swift in Sources */,
 				F1439DA72CC9F8E3000BD920 /* TextinputView.swift in Sources */,
 				F1EF1B8B2E160016000A8B9E /* VideoButton.swift in Sources */,
+				F1715C792FC39821009FEDB6 /* LevelIndicatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

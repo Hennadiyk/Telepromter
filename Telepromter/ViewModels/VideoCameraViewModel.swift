@@ -28,6 +28,12 @@ final class VideoCameraViewModel: NSObject {
     var audioLevel: Float = 0.0
     var videoSavedToPhotos = false
     var audioLevelsBuffer: [Float] = Array(repeating: 0.0, count: 40)
+    var isFrontCamera = true
+    var availableZoomOptions: [ZoomOption] = []
+    var selectedZoomFactor: Double = 1.0
+    var isSavingVideo = false
+    var showAspectGuides: Bool = true
+    var isSwitchingCamera = false
 
     /// Frame rates actually supported by the front camera at the selected resolution.
     var supportedFrameRates: [FrameRate] {
@@ -58,6 +64,9 @@ final class VideoCameraViewModel: NSObject {
             }
         }
     }
+    var selectedAspectRatio: VideoAspectRatio = .portrait {
+        didSet { UserDefaults.standard.set(selectedAspectRatio.rawValue, forKey: "selectedAspectRatio") }
+    }
     var selectedFrameRate: FrameRate = .fps60 {
         didSet {
             UserDefaults.standard.set(selectedFrameRate.rawValue, forKey: "selectedFrameRate")
@@ -77,6 +86,11 @@ final class VideoCameraViewModel: NSObject {
     @ObservationIgnored nonisolated(unsafe) private let audioOutput = AVCaptureAudioDataOutput()
     @ObservationIgnored nonisolated(unsafe) private var currentCamera: AVCaptureDevice?
     @ObservationIgnored nonisolated(unsafe) private var currentInput: AVCaptureDeviceInput?
+    // fps and zoom to apply once the session starts (virtual devices only)
+    @ObservationIgnored nonisolated(unsafe) private var pendingPostStartFrameRate: Double? = nil
+    @ObservationIgnored nonisolated(unsafe) private var pendingPostStartZoom: Double? = nil
+    // set synchronously on the main thread before the session stops so fileOutput can read it
+    @ObservationIgnored nonisolated(unsafe) private var recordingStoppedByBackground = false
     @ObservationIgnored private var recordingTimer: Timer?
     @ObservationIgnored private var countdownTimer: Timer?
     @ObservationIgnored private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
@@ -88,9 +102,11 @@ final class VideoCameraViewModel: NSObject {
         super.init()
         if let raw = UserDefaults.standard.string(forKey: "selectedResolution"),
            let value = VideoResolution(rawValue: raw) { selectedResolution = value }
+        if let raw = UserDefaults.standard.string(forKey: "selectedAspectRatio"),
+           let value = VideoAspectRatio(rawValue: raw) { selectedAspectRatio = value }
         if let raw = UserDefaults.standard.object(forKey: "selectedFrameRate") as? Int,
            let value = FrameRate(rawValue: raw) { selectedFrameRate = value }
-        countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
+countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
         let countdown = UserDefaults.standard.integer(forKey: "selectedCountdown")
         if countdown > 0 { selectedCountdown = countdown }
         setupPreviewLayer()
@@ -119,6 +135,15 @@ final class VideoCameraViewModel: NSObject {
             queue: .main
         ) { [weak self] _ in
             guard self?.userWantsSessionRunning == true else { return }
+            // Flag set synchronously so fileOutput can read it before any async hop
+            self?.recordingStoppedByBackground = true
+            Task { @MainActor [weak self] in
+                guard let self, self.isRecording else {
+                    self?.recordingStoppedByBackground = false
+                    return
+                }
+                self.stopRecording()
+            }
             self?.sessionQueue.async { [weak self] in
                 self?.captureSession.stopRunning()
                 Task { @MainActor [weak self] in self?.isSessionRunning = false }
@@ -162,6 +187,7 @@ final class VideoCameraViewModel: NSObject {
         let frameRate = Double(selectedFrameRate.rawValue)
         let resolution = selectedResolution.preset
         let resolutionName = selectedResolution.rawValue
+        let useFront = isFrontCamera
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             self.captureSession.beginConfiguration()
@@ -170,7 +196,7 @@ final class VideoCameraViewModel: NSObject {
             self.captureSession.commitConfiguration()
             self.currentInput = nil
             self.currentCamera = nil
-            self.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
+            self.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName, useFrontCamera: useFront)
             self.startSessionOnSessionQueue()
         }
     }
@@ -198,7 +224,7 @@ final class VideoCameraViewModel: NSObject {
         if videoStatus == .authorized && audioStatus == .authorized {
             userWantsSessionRunning = true
             sessionQueue.async { [weak self] in
-                self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
+                self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName, useFrontCamera: true)
                 self?.startSessionOnSessionQueue()
             }
         } else if videoStatus != .denied && audioStatus != .denied {
@@ -208,7 +234,7 @@ final class VideoCameraViewModel: NSObject {
                     if granted {
                         self.userWantsSessionRunning = true
                         self.sessionQueue.async { [weak self] in
-                            self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
+                            self?.setupCameraOnSessionQueue(preset: preset, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName, useFrontCamera: true)
                             self?.startSessionOnSessionQueue()
                         }
                     } else {
@@ -238,6 +264,7 @@ final class VideoCameraViewModel: NSObject {
     }
 
     func switchCamera() {
+        withAnimation(.easeInOut(duration: 0.25)) { isSwitchingCamera = true }
         let frameRate = Double(selectedFrameRate.rawValue)
         let resolution = selectedResolution.preset
         let resolutionName = selectedResolution.rawValue
@@ -251,8 +278,16 @@ final class VideoCameraViewModel: NSObject {
 
             self.captureSession.removeInput(currentInput)
 
-            let newPosition: AVCaptureDevice.Position = currentCamera.position == .back ? .front : .back
-            guard let newCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: newPosition) else {
+            let isCurrentlyFront = currentCamera.position == .front
+            let newCamera: AVCaptureDevice?
+            if isCurrentlyFront {
+                newCamera = self.bestBackCamera()
+            } else {
+                newCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            }
+
+            guard let newCamera else {
+                self.captureSession.addInput(currentInput)
                 Task { @MainActor [weak self] in self?.postAlert(message: "Unable to switch camera") }
                 return
             }
@@ -264,8 +299,27 @@ final class VideoCameraViewModel: NSObject {
                     self.currentCamera = newCamera
                     self.currentInput = newInput
                     self.configureCameraSettingsOnSessionQueue(for: newCamera, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
+
+                    let zoomOptions = isCurrentlyFront ? self.buildZoomOptions(for: newCamera) : []
+                    let defaultZoom = zoomOptions.first(where: { $0.label == "1×" })?.factor ?? 1.0
+
+                    // Session is running during switchCamera — videoZoomFactor can be set now
+                    if isCurrentlyFront && !newCamera.virtualDeviceSwitchOverVideoZoomFactors.isEmpty {
+                        do {
+                            try newCamera.lockForConfiguration()
+                            newCamera.videoZoomFactor = CGFloat(defaultZoom)
+                            newCamera.unlockForConfiguration()
+                        } catch {}
+                    }
+
                     Task { @MainActor [weak self] in
+                        self?.isFrontCamera = !isCurrentlyFront
+                        self?.availableZoomOptions = zoomOptions
+                        self?.selectedZoomFactor = defaultZoom
                         self?.setupRotationCoordinator(for: newCamera)
+                        withAnimation(.easeInOut(duration: 0.35)) {
+                            self?.isSwitchingCamera = false
+                        }
                     }
                 } else {
                     self.captureSession.addInput(currentInput)
@@ -280,24 +334,157 @@ final class VideoCameraViewModel: NSObject {
         }
     }
 
+    func setZoom(_ factor: Double) {
+        selectedZoomFactor = factor
+        sessionQueue.async { [weak self] in
+            guard let self, let camera = self.currentCamera else { return }
+            do {
+                try camera.lockForConfiguration()
+                camera.ramp(toVideoZoomFactor: CGFloat(factor), withRate: 8.0)
+                camera.unlockForConfiguration()
+            } catch {}
+        }
+    }
+
+    nonisolated private func bestBackCamera() -> AVCaptureDevice? {
+        let types: [AVCaptureDevice.DeviceType] = [
+            .builtInTripleCamera,
+            .builtInDualWideCamera,
+            .builtInDualCamera,
+            .builtInWideAngleCamera
+        ]
+        let session = AVCaptureDevice.DiscoverySession(deviceTypes: types, mediaType: .video, position: .back)
+        return session.devices.first
+    }
+
+    nonisolated private func buildZoomOptions(for device: AVCaptureDevice) -> [ZoomOption] {
+        let switchOvers = device.virtualDeviceSwitchOverVideoZoomFactors.map { Double(truncating: $0) }
+        let minZoom = device.minAvailableVideoZoomFactor
+        let maxZoom = device.maxAvailableVideoZoomFactor
+
+        guard !switchOvers.isEmpty else {
+            return [ZoomOption(factor: max(1.0, minZoom), label: "1×")]
+        }
+
+        let wideFactor = switchOvers[0]  // device factor that shows as "1×" to the user
+
+        // Fixed display levels: 0.5×, 1×, 2×, 4×, 8×
+        // 0.5× = ultrawide (device minZoom), others are multiples of wideFactor
+        let targets: [(multiplier: Double, label: String)] = [
+            (0.5, "0.5×"), (1.0, "1×"), (2.0, "2×"), (4.0, "4×"), (8.0, "8×")
+        ]
+        return targets.compactMap { target in
+            let factor = target.multiplier == 0.5 ? minZoom : wideFactor * target.multiplier
+            guard factor >= minZoom && factor <= maxZoom else { return nil }
+            return ZoomOption(factor: factor, label: target.label)
+        }
+    }
+
     func toggleRecording() {
         isRecording ? stopRecording() : startRecording()
     }
 
     nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        if let error = error {
+        let backgroundStop = recordingStoppedByBackground
+        recordingStoppedByBackground = false
+
+        if let error = error, !backgroundStop {
             Task { @MainActor [weak self] in self?.postAlert(message: "Recording failed: \(error.localizedDescription)") }
             return
         }
 
+        Task { [weak self] in
+            guard let self else { return }
+            await MainActor.run { self.isSavingVideo = true }
+            let aspectRatio = await MainActor.run { self.selectedAspectRatio }
+            let finalURL: URL
+            if aspectRatio == .widescreen {
+                finalURL = outputFileURL
+            } else if let cropped = await self.exportCropped(from: outputFileURL, aspectRatio: aspectRatio) {
+                finalURL = cropped
+            } else {
+                finalURL = outputFileURL
+            }
+            self.saveToPhotos(url: finalURL)
+        }
+    }
+
+    nonisolated private func exportCropped(from inputURL: URL, aspectRatio: VideoAspectRatio) async -> URL? {
+        let asset = AVURLAsset(url: inputURL)
+        guard let videoTrack = try? await asset.loadTracks(withMediaType: .video).first,
+              let naturalSize = try? await videoTrack.load(.naturalSize),
+              let preferredTransform = try? await videoTrack.load(.preferredTransform),
+              let nominalFrameRate = try? await videoTrack.load(.nominalFrameRate),
+              let duration = try? await asset.load(.duration) else { return nil }
+
+        // Compute display size (accounts for rotation stored in the track transform)
+        let isRotated = preferredTransform.b != 0 || preferredTransform.c != 0
+        let displaySize = isRotated
+            ? CGSize(width: naturalSize.height, height: naturalSize.width)
+            : naturalSize
+
+        let targetRatio = aspectRatio.size.width / aspectRatio.size.height
+        let sourceRatio = displaySize.width / displaySize.height
+
+        // Already the right ratio — no re-encode needed (e.g. portrait recording + 9:16 selected)
+        if abs(targetRatio - sourceRatio) < 0.01 { return nil }
+
+        var renderSize: CGSize
+        if targetRatio > sourceRatio {
+            let h = (displaySize.width / targetRatio / 2).rounded() * 2
+            renderSize = CGSize(width: displaySize.width, height: h)
+        } else {
+            let w = (displaySize.height * targetRatio / 2).rounded() * 2
+            renderSize = CGSize(width: w, height: displaySize.height)
+        }
+
+        let cropOrigin = CGPoint(
+            x: (displaySize.width  - renderSize.width)  / 2,
+            y: (displaySize.height - renderSize.height) / 2
+        )
+
+        // Compose: track preferred transform → then offset to center the crop
+        let cropTransform = preferredTransform.concatenating(
+            CGAffineTransform(translationX: -cropOrigin.x, y: -cropOrigin.y)
+        )
+
+        let layerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoTrack)
+        layerInstruction.setTransform(cropTransform, at: .zero)
+
+        let instruction = AVMutableVideoCompositionInstruction()
+        instruction.timeRange = CMTimeRange(start: .zero, duration: duration)
+        instruction.layerInstructions = [layerInstruction]
+
+        let videoComposition = AVMutableVideoComposition()
+        videoComposition.renderSize = renderSize
+        let fps = max(1, Int32(nominalFrameRate.rounded()))
+        videoComposition.frameDuration = CMTime(value: 1, timescale: fps)
+        videoComposition.instructions = [instruction]
+
+        let outputURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("cropped_\(Date().timeIntervalSince1970).mov")
+
+        guard let exporter = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHEVCHighestQuality) else { return nil }
+        exporter.videoComposition = videoComposition
+
+        do {
+            try await exporter.export(to: outputURL, as: .mov)
+            return outputURL
+        } catch {
+            return nil
+        }
+    }
+
+    nonisolated private func saveToPhotos(url: URL) {
         PHPhotoLibrary.shared().performChanges {
-            PHAssetCreationRequest.forAsset().addResource(with: .video, fileURL: outputFileURL, options: nil)
+            PHAssetCreationRequest.forAsset().addResource(with: .video, fileURL: url, options: nil)
         } completionHandler: { [weak self] success, error in
             Task { @MainActor [weak self] in
                 guard let self else { return }
+                self.isSavingVideo = false
                 if success {
-                    self.lastVideoLocalURL = outputFileURL
-                    self.generateThumbnail(for: outputFileURL)
+                    self.lastVideoLocalURL = url
+                    self.generateThumbnail(for: url)
                     self.videoSavedToPhotos = true
                 } else {
                     self.postAlert(message: "Failed to save video: \(error?.localizedDescription ?? "Unknown error")")
@@ -396,7 +583,8 @@ final class VideoCameraViewModel: NSObject {
         preset: AVCaptureSession.Preset,
         frameRate: Double,
         resolution: AVCaptureSession.Preset,
-        resolutionName: String
+        resolutionName: String,
+        useFrontCamera: Bool
     ) {
         captureSession.beginConfiguration()
         defer { captureSession.commitConfiguration() }
@@ -406,11 +594,6 @@ final class VideoCameraViewModel: NSObject {
         currentInput = nil
         currentCamera = nil
 
-        // Use .inputPriority for all cases so we can set activeFormat directly.
-        // Setting device.activeFormat (done in configureCameraSettingsOnSessionQueue) automatically
-        // switches the session preset to .inputPriority — we set it here proactively to avoid
-        // the session trying to auto-configure the format when commitConfiguration() is called.
-        captureSession.sessionPreset = .inputPriority
         captureSession.automaticallyConfiguresApplicationAudioSession = false
 
         let audioSession = AVAudioSession.sharedInstance()
@@ -427,11 +610,22 @@ final class VideoCameraViewModel: NSObject {
             try? audioSession.setActive(true)
         }
 
-        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+        let camera: AVCaptureDevice?
+        if useFrontCamera {
+            camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        } else {
+            camera = bestBackCamera()
+        }
+
+        guard let camera else {
             Task { @MainActor [weak self] in self?.postAlert(message: "No camera available") }
             return
         }
         currentCamera = camera
+
+        // Always use inputPriority — manual activeFormat selection gives precise fps control
+        // and filters ALL ProRes variants (including 422 HQ which requires external storage).
+        captureSession.sessionPreset = .inputPriority
 
         do {
             let input = try AVCaptureDeviceInput(device: camera)
@@ -439,7 +633,21 @@ final class VideoCameraViewModel: NSObject {
                 captureSession.addInput(input)
                 currentInput = input
                 configureCameraSettingsOnSessionQueue(for: camera, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
-                Task { @MainActor [weak self] in self?.setupRotationCoordinator(for: camera) }
+
+                let zoomOptions = useFrontCamera ? [] : buildZoomOptions(for: camera)
+                let defaultZoom = zoomOptions.first(where: { $0.label == "1×" })?.factor ?? 1.0
+
+                if !useFrontCamera && !camera.virtualDeviceSwitchOverVideoZoomFactors.isEmpty {
+                    // videoZoomFactor requires a running session — defer to post-start
+                    pendingPostStartZoom = defaultZoom
+                }
+
+                Task { @MainActor [weak self] in
+                    self?.isFrontCamera = useFrontCamera
+                    self?.availableZoomOptions = zoomOptions
+                    self?.selectedZoomFactor = defaultZoom
+                    self?.setupRotationCoordinator(for: camera)
+                }
             } else {
                 Task { @MainActor [weak self] in self?.postAlert(message: "Failed to add camera input") }
                 return
@@ -492,24 +700,37 @@ final class VideoCameraViewModel: NSObject {
         // requested fps (or higher) at the requested resolution — not just any matching format.
         let candidateFormats = device.formats
             .filter { format in
-                // Only video-capable formats (exclude photo-only formats)
+                // Only standard H.264/HEVC formats — whitelist excludes ProRes and any unknown codec
                 guard format.mediaType == .video else { return false }
+                guard format.isStandardVideoCodec else { return false }
                 guard format.isSupported(for: resolution) else { return false }
                 return format.videoSupportedFrameRateRanges.contains {
                     $0.maxFrameRate >= frameRate
                 }
             }
-            // Among all qualifying formats, prefer larger dimensions (higher quality) then
-            // the one whose max frame rate is closest to (but >= ) the requested rate.
+            // Prefer formats that exactly match the standard preset dimensions — oversized formats
+            // (e.g. 4032x3024 on virtual cameras) technically pass the >= check but can cause
+            // fps instability. Among exact matches, prefer the one closest to the requested fps.
             .sorted { a, b in
                 let dimA = CMVideoFormatDescriptionGetDimensions(a.formatDescription)
                 let dimB = CMVideoFormatDescriptionGetDimensions(b.formatDescription)
+                let targetW: Int32
+                let targetH: Int32
+                switch resolution {
+                case .hd4K3840x2160:  targetW = 3840; targetH = 2160
+                case .hd1920x1080:    targetW = 1920; targetH = 1080
+                case .hd1280x720:     targetW = 1280; targetH = 720
+                default:              targetW = 3840; targetH = 2160
+                }
+                let aExact = dimA.width == targetW && dimA.height == targetH
+                let bExact = dimB.width == targetW && dimB.height == targetH
+                if aExact != bExact { return aExact }
                 let areaA = Int(dimA.width) * Int(dimA.height)
                 let areaB = Int(dimB.width) * Int(dimB.height)
                 if areaA != areaB { return areaA > areaB }
                 let maxA = a.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
                 let maxB = b.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
-                return maxA < maxB  // prefer lower (closer to requested) among equal-res formats
+                return maxA < maxB  // prefer fps closest to (but >= ) requested
             }
 
         do {
@@ -532,7 +753,7 @@ final class VideoCameraViewModel: NSObject {
             } else {
                 // No format supports the requested fps — fall back to max available fps at resolution
                 let fallbackFormats = device.formats
-                    .filter { $0.mediaType == .video && $0.isSupported(for: resolution) }
+                    .filter { $0.mediaType == .video && $0.isStandardVideoCodec && $0.isSupported(for: resolution) }
                     .sorted { a, b in
                         let maxA = a.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
                         let maxB = b.videoSupportedFrameRateRanges.map { $0.maxFrameRate }.max() ?? 0
@@ -547,6 +768,10 @@ final class VideoCameraViewModel: NSObject {
                     Task { @MainActor [weak self] in
                         self?.postAlert(message: "\(Int(frameRate)) fps not supported at \(resolutionName). Using \(Int(maxFPS)) fps.")
                     }
+                } else if let lastResort = device.formats.first(where: { $0.mediaType == .video && $0.isStandardVideoCodec }) {
+                    // No format matches the requested resolution — use any compatible format to
+                    // guarantee we never record with ProRes active on internal storage.
+                    device.activeFormat = lastResort
                 } else {
                     Task { @MainActor [weak self] in
                         self?.postAlert(message: "No compatible format found for \(resolutionName)")
@@ -627,8 +852,22 @@ final class VideoCameraViewModel: NSObject {
     nonisolated private func startSessionOnSessionQueue() {
         if !captureSession.isRunning {
             captureSession.startRunning()
+            applyVirtualCameraPostStartSettings()
             Task { @MainActor [weak self] in self?.isSessionRunning = true }
         }
+    }
+
+    nonisolated private func applyVirtualCameraPostStartSettings() {
+        guard let camera = currentCamera,
+              !camera.virtualDeviceSwitchOverVideoZoomFactors.isEmpty,
+              let zoom = pendingPostStartZoom else { return }
+        pendingPostStartZoom = nil
+        pendingPostStartFrameRate = nil
+        do {
+            try camera.lockForConfiguration()
+            camera.videoZoomFactor = CGFloat(zoom)
+            camera.unlockForConfiguration()
+        } catch {}
     }
 
     func stopSession() {
@@ -653,8 +892,6 @@ final class VideoCameraViewModel: NSObject {
         let resolutionName = selectedResolution.rawValue
         sessionQueue.async { [weak self] in
             guard let self = self, let camera = self.currentCamera else { return }
-            // Setting device.activeFormat inside configureCameraSettingsOnSessionQueue automatically
-            // changes the session preset to .inputPriority — no manual preset change needed.
             self.configureCameraSettingsOnSessionQueue(for: camera, frameRate: frameRate, resolution: resolution, resolutionName: resolutionName)
         }
     }
@@ -668,6 +905,24 @@ extension VideoCameraViewModel: AVCaptureAudioDataOutputSampleBufferDelegate {}
 
 // MARK: - AVCaptureDevice.Format helpers
 extension AVCaptureDevice.Format {
+    /// True for standard capture formats (YUV). False for any ProRes variant.
+    /// Capture format descriptions use pixel-format FourCCs (e.g. '420v', '420f'),
+    /// not encoding codec types — so we blacklist ProRes rather than whitelisting H.264/HEVC.
+    var isStandardVideoCodec: Bool {
+        let subType = CMFormatDescriptionGetMediaSubType(formatDescription)
+        let proResTypes: Set<FourCharCode> = [
+            kCMVideoCodecType_AppleProRes4444XQ,
+            kCMVideoCodecType_AppleProRes4444,
+            kCMVideoCodecType_AppleProRes422HQ,
+            kCMVideoCodecType_AppleProRes422,
+            kCMVideoCodecType_AppleProRes422LT,
+            kCMVideoCodecType_AppleProRes422Proxy,
+            0x72777066, // ProRes RAW  ('rwpf')
+            0x72777068  // ProRes RAW High ('rwph')
+        ]
+        return !proResTypes.contains(subType)
+    }
+
     func isSupported(for preset: AVCaptureSession.Preset) -> Bool {
         let dimensions = CMVideoFormatDescriptionGetDimensions(formatDescription)
         switch preset {
@@ -687,6 +942,14 @@ enum VideoResolution: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    var label: String {
+        switch self {
+        case .hd720:  return "720p"
+        case .hd1080: return "1080"
+        case .uhd4K:  return "4K"
+        }
+    }
+
     var preset: AVCaptureSession.Preset {
         switch self {
         case .hd720:  return .hd1280x720
@@ -702,4 +965,32 @@ enum FrameRate: Int, CaseIterable, Identifiable {
     case fps60 = 60
 
     var id: Int { rawValue }
+}
+
+struct ZoomOption: Identifiable, Equatable {
+    var id: Double { factor }
+    let factor: Double
+    let label: String
+}
+
+enum VideoAspectRatio: String, CaseIterable, Identifiable {
+    case widescreen = "16:9"
+    case classic    = "4:3"
+    case square     = "1:1"
+    case portrait43 = "3:4"
+    case portrait   = "9:16"
+
+    var id: String { rawValue }
+
+    var label: String { rawValue }
+
+    var size: CGSize {
+        switch self {
+        case .widescreen: return CGSize(width: 16, height: 9)
+        case .classic:    return CGSize(width: 4,  height: 3)
+        case .square:     return CGSize(width: 1,  height: 1)
+        case .portrait43: return CGSize(width: 3,  height: 4)
+        case .portrait:   return CGSize(width: 9,  height: 16)
+        }
+    }
 }

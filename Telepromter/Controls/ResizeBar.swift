@@ -26,19 +26,19 @@ struct ResizeBar: View {
 
     var body: some View {
         ZStack {
-            // Dynamic waveform arc using audioLevel
-            Arc(startAngle: .degrees(80),
-                endAngle: .degrees(80 - (80 * Double(min(cameraViewModel.audioLevel, 1)))),
-                clockwise: false)
-            .stroke(
-                LinearGradient(
-                    colors: [.green, .yellow, .red],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                ),
-                style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round)
-            )
-            .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
+//            // Dynamic waveform arc using audioLevel
+//            Arc(startAngle: .degrees(80),
+//                endAngle: .degrees(80 - (80 * Double(min(cameraViewModel.audioLevel, 1)))),
+//                clockwise: false)
+//            .stroke(
+//                LinearGradient(
+//                    colors: [.green, .yellow, .red],
+//                    startPoint: .leading,
+//                    endPoint: .trailing
+//                ),
+//                style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round)
+//            )
+//            .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
 
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(-1),

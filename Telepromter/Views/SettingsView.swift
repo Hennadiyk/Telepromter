@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(ContentViewModel.self) var contentVM
     @AppStorage("inLine") var inLine: Bool = false
     @AppStorage("themeColor") var themeColor: themeSwitching = .blue
+    @AppStorage("showLevelIndicator") var showLevelIndicator: Bool = true
     @State private var opacity: Double = 1
 
     var body: some View {
@@ -37,11 +38,12 @@ struct SettingsView: View {
                             }
                         } header: {
                             Text("Video Settings")
+                                .font(.callout)
                         }
 
                         Section {
                             Toggle(isOn: $cameraVM.countdownOnOff) {
-                                Text("Count Down")
+                                Text("Recording Count Down")
                             }
                             Picker(selection: $cameraVM.selectedCountdown, label: Text("Select Duration")) {
                                 ForEach(1...15, id: \.self) {
@@ -50,21 +52,24 @@ struct SettingsView: View {
                             }
                             .pickerStyle(.wheel)
                             .frame(height: 60)
-                        } header: {
-                            Text("Recording Count Down")
-                        }
-
-                        Section {
+                            
+                            Toggle(isOn: $showLevelIndicator) {
+                                Text("Level Indicator")
+                            }
+                            
                             Toggle(isOn: $inLine) {
-                                Text("In Line")
+                                Text("In Line Text")
                             }
                             Text("When In Line is turned on, the text will be formatted as a single word per line, rather than continuing to flow as it would with the default formatting.")
                                 .font(.caption)
                                 .foregroundStyle(.gray)
+                            
+                            
                         } header: {
-                            Text("In Line Text")
+                            Text("General")
+                                .font(.callout)
                         }
-
+                        
                         Section {
                             VStack(alignment: .center) {
                                 HStack {
@@ -101,6 +106,7 @@ struct SettingsView: View {
                                 .foregroundStyle(.gray)
                         } header: {
                             Text("Background Color")
+                                .font(.callout)
                         }
                     }
                     .scrollContentBackground(.hidden)

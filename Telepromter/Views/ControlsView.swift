@@ -28,6 +28,7 @@ struct ControlsView: View {
     @State private var showAlert = false
     @State private var hasDragged = false
     @State private var scrollProgress: Double = 0
+    @AppStorage("showLevelIndicator") private var showLevelIndicator: Bool = true
 
     var body: some View {
         @Bindable var cameraViewModel = cameraViewModel
@@ -63,12 +64,25 @@ struct ControlsView: View {
             }
 
             if contentVM.videoOn {
-                CameraView(previewLayer: cameraViewModel.previewLayer)
+                CameraView(previewLayer: cameraViewModel.previewLayer, aspectRatio: cameraViewModel.selectedAspectRatio, showGuides: cameraViewModel.showAspectGuides)
                     .statusBar(hidden: true)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
                     .onAppear { cameraViewModel.checkPermissions() }
                     .onDisappear { cameraViewModel.stopSession() }
+
+                if cameraViewModel.isSwitchingCamera {
+                    Color.clear
+                        .background(.ultraThinMaterial)
+                        .ignoresSafeArea()
+                        .allowsHitTesting(false)
+                        .transition(.opacity)
+                }
+
+                if showLevelIndicator {
+                    LevelIndicatorView()
+                        .allowsHitTesting(false)
+                }
             }
 
             GeometryReader { geometry in
