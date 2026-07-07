@@ -29,6 +29,7 @@ struct ControlsView: View {
     @State private var hasDragged = false
     @State private var scrollProgress: Double = 0
     @AppStorage("showLevelIndicator") private var showLevelIndicator: Bool = true
+    @AppStorage("scrollMode") private var scrollMode: ScrollMode = .regular
 
     var body: some View {
         @Bindable var cameraViewModel = cameraViewModel
@@ -94,31 +95,37 @@ struct ControlsView: View {
                         .scaleEffect(isDragging ? 1.1 : 1)
                         .offset(offset)
                         .gesture(combined)
+                        .modifier(DragPrompterTipModifier())
                         .frame(
                             width: currentAmountWidth > 0 ? currentAmountWidth : finalAmountWidth,
                             height: currentAmountHeight > 0 ? currentAmountHeight : finalAmountHeight
                         )
 
                     HStack(alignment: .top) {
-                        HStack {
-                            Button {
-                                simpleSuccess()
-                                @Bindable var contentVM = contentVM
-                                if contentVM.textInput.isEmpty {
-                                    showAlert.toggle()
-                                    contentVM.selectedTab = 0
-                                } else {
-                                    contentVM.isPlaying.toggle()
+                        if scrollMode != .voice {
+                            HStack {
+                                Button {
+                                    simpleSuccess()
+                                    @Bindable var contentVM = contentVM
+                                    if contentVM.textInput.isEmpty {
+                                        showAlert.toggle()
+                                        contentVM.selectedTab = 0
+                                    } else {
+                                        contentVM.isPlaying.toggle()
+                                    }
+                                } label: {
+                                    PlayButton()
                                 }
-                            } label: {
-                                PlayButton()
+                            }
+                            .modifier(PlayButtonTipModifier())
+                            .offset(x: offset.width + 82, y: offset.height + (isDragging ? -53 : -43))
+                            .opacity(isDragging ? 0 : 1)
+                            .alert(isPresented: $showAlert) {
+                                Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
                             }
                         }
-                        .offset(x: offset.width + 82, y: offset.height + (isDragging ? -53 : -43))
-                        .opacity(isDragging ? 0 : 1)
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
-                        }
+                        
+                       
 
                         ResizeBar(progress: $scrollProgress)
                             .clipped()
@@ -145,6 +152,7 @@ struct ControlsView: View {
                                         }
                                     }
                             )
+                        
                             
                     }
                 }
@@ -160,6 +168,7 @@ struct ControlsView: View {
            
             .onPreferenceChange(SizePreferenceKey.self) { newSize in
                 if !hasDragged {
+                    finalAmountWidth = newSize.width - (UIDevice.isIPad ? 110 : 85)
                     let topPadding: CGFloat = 20.0
                     offset = CGSize(width: (newSize.width - finalAmountWidth) / 2, height: topPadding)
                     lastOffset = offset
@@ -180,4 +189,5 @@ struct ControlsView: View {
         .environment(ContentViewModel())
         .environment(VideoCameraViewModel())
         .environment(PaywallViewModel())
+        .environment(VoiceScrollViewModel())
 }

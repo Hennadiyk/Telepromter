@@ -95,6 +95,8 @@ final class VideoCameraViewModel: NSObject {
     @ObservationIgnored private var countdownTimer: Timer?
     @ObservationIgnored private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
     @ObservationIgnored nonisolated(unsafe) let previewLayer = AVCaptureVideoPreviewLayer()
+    // Set by VoiceMicButton to receive audio buffers for speech recognition
+    @ObservationIgnored nonisolated(unsafe) var audioBufferHandler: ((CMSampleBuffer) -> Void)?
 
     @ObservationIgnored private let sessionQueue = DispatchQueue(label: "video.sessionQueue")
 
@@ -527,6 +529,9 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
     }
 
     nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // Forward audio to voice scroll recognizer when active
+        audioBufferHandler?(sampleBuffer)
+
         guard let formatDesc = CMSampleBufferGetFormatDescription(sampleBuffer),
               let asbd = CMAudioFormatDescriptionGetStreamBasicDescription(formatDesc)?.pointee,
               let dataBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) else { return }

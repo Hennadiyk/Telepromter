@@ -30,6 +30,12 @@ struct TextInputView: View {
                         RoundedRectangle(cornerRadius: 40)
                             .stroke(.gray.opacity(0.2), lineWidth: 1)
                     )
+                    .overlay(alignment: .top) {
+                        // Small anchor at the top so TipKit has room to show the popover above it
+                        Color.clear
+                            .frame(width: 180, height: 1)
+                            .modifier(EnterTextTipModifier())
+                    }
                     .scrollContentBackground(.hidden)
 
             }

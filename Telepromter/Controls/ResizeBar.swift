@@ -21,25 +21,12 @@ struct Arc: Shape {
 
 struct ResizeBar: View {
     @Environment(VideoCameraViewModel.self) private var cameraViewModel
+    @Environment(ContentViewModel.self) private var contentVM
     @Binding var progress: Double
     @State private var lineAngle = 1.0
 
     var body: some View {
         ZStack {
-//            // Dynamic waveform arc using audioLevel
-//            Arc(startAngle: .degrees(80),
-//                endAngle: .degrees(80 - (80 * Double(min(cameraViewModel.audioLevel, 1)))),
-//                clockwise: false)
-//            .stroke(
-//                LinearGradient(
-//                    colors: [.green, .yellow, .red],
-//                    startPoint: .leading,
-//                    endPoint: .trailing
-//                ),
-//                style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round)
-//            )
-//            .animation(.easeOut(duration: 0.2), value: cameraViewModel.audioLevel)
-
             Arc(startAngle: .degrees(80),
                 endAngle: .degrees(-1),
                 clockwise: false)
@@ -53,12 +40,25 @@ struct ResizeBar: View {
             .onAppear {
                 withAnimation(.bouncy(duration: 2)) { lineAngle = 80 }
             }
+            
+            Button {
+                contentVM.scrollToTopToken = UUID()
+            } label: {
+                Image(systemName: "arrow.up.circle.fill")
+                    .resizable()
+                    .frame(width: 18, height: 18)
+                    .foregroundStyle(Color.color.gradientLow)
+                    .padding(8)
+            }
+            .offset(x: 42, y: -40)
         }
         .frame(width: 105, height: 105)
+        
     }
 }
 
 #Preview {
     ResizeBar(progress: .constant(0.5))
         .environment(VideoCameraViewModel())
+        .environment(ContentViewModel())
 }

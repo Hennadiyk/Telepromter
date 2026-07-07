@@ -30,8 +30,10 @@ struct PlayButton: View {
                     Text(contentVM.isPlaying ? "PAUSE" : "PLAY")
                         .font(.system(size: 14, weight: .bold))
                         .foregroundStyle(.white)
+                        .minimumScaleFactor(0.6)
+                        .padding(2)
                 }
-                .frame(width: 80, height: 15)
+                .frame(width: 100, height: 15)
                 .foregroundStyle(LinearGradient(colors: [Color.color.gradientHigh, Color.color.gradientLow], startPoint: .leading, endPoint: .trailing))
         }
         .frame(width: 105, height: 105)
@@ -40,4 +42,5 @@ struct PlayButton: View {
 
 #Preview {
     PlayButton().environment(ContentViewModel())
+        .environment(\.locale, Locale(identifier: "eng"))
 }

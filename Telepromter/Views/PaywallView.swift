@@ -105,6 +105,10 @@ struct HeaderImageView: View {
                         Image(systemName: "checkmark.circle.fill").foregroundStyle(.blue)
                         Text("Custom background colors")
                     }.padding(.vertical, 1)
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.blue)
+                        Text("Voice-controlled scrolling")
+                    }.padding(.vertical, 1)
                 }
                 .padding(.top, 40)
                 .font(.system(size: 16))

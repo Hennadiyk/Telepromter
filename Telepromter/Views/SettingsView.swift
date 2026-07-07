@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(VideoCameraViewModel.self) var cameraVM
     @Environment(ContentViewModel.self) var contentVM
-    @AppStorage("inLine") var inLine: Bool = false
+    @AppStorage("scrollMode") var scrollMode: ScrollMode = .regular
     @AppStorage("themeColor") var themeColor: themeSwitching = .blue
     @AppStorage("showLevelIndicator") var showLevelIndicator: Bool = true
     @State private var opacity: Double = 1
@@ -57,10 +57,13 @@ struct SettingsView: View {
                                 Text("Level Indicator")
                             }
                             
-                            Toggle(isOn: $inLine) {
-                                Text("In Line Text")
+                            Picker("Scroll Mode", selection: $scrollMode) {
+                                Text("Regular").tag(ScrollMode.regular)
+                                Text("In Line").tag(ScrollMode.inLine)
+                                Text("Voice").tag(ScrollMode.voice)
                             }
-                            Text("When In Line is turned on, the text will be formatted as a single word per line, rather than continuing to flow as it would with the default formatting.")
+                            .pickerStyle(.segmented)
+                            Text("Regular — flowing text. In Line — one word per line. Voice — text follows your speech (video mode only).")
                                 .font(.caption)
                                 .foregroundStyle(.gray)
                             

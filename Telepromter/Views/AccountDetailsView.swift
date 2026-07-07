@@ -67,6 +67,7 @@ struct AccountDetailsView: View {
                                 Text("Settings")
                                     .padding(.vertical, 10)
                             }
+                            .modifier(AccountSettingsTipModifier())
                         }
 
                         Section {

@@ -8,6 +8,10 @@
 import SwiftUI
 import Observation
 
+enum ScrollMode: String {
+    case regular, inLine, voice
+}
+
 @Observable @MainActor
 final class ContentViewModel {
     var textInput: String = "" {
@@ -33,6 +37,7 @@ final class ContentViewModel {
     var textContentHeight: CGFloat = 0
 
     var initialDragOffset: CGFloat = 0.0
+    var scrollToTopToken: UUID = UUID()
     var videoOn: Bool = false
     var selectedTab: Int = 1
 

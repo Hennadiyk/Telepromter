@@ -19,6 +19,7 @@ struct VideoButton: View {
     
     @AppStorage("textSize") private var textSize: Int = 4
     @AppStorage("speedValue") private var speedValue: Double = 3
+    @AppStorage("scrollMode") private var scrollMode: ScrollMode = .regular
     
     @Binding var fontSpeedBar: Bool
     
@@ -98,16 +99,17 @@ struct VideoButton: View {
                             Image(systemName: "textformat.size")
                                 .font(.custom("Arial", size: 16))
                                 .foregroundStyle(Color.color.text)
-                            
+
                             Divider()
-                            
+
                             Image(systemName: "figure.run")
                                 .font(.custom("Arial", size: 16))
                                 .foregroundStyle(Color.color.text)
-                            
+
                         }.onTapGesture {
                             withAnimation(.bouncy) { fontSpeedBar.toggle() }
                         }
+                        .modifier(TextSizeSpeedTipModifier())
                         
                         Spacer()
                         
@@ -132,14 +134,14 @@ struct VideoButton: View {
                                     .frame(width: 30, height: 30)
                             }
                             .disabled(round(speedValue) <= 1)
-                            
+
                             Text("\(Int(round(speedValue)))")
                                 .font(.system(size: 35))
                                 .frame(width: 54)
                                 .bold()
                                 .opacity(1)
                                 .foregroundStyle(round(speedValue) >= 10 ? .orange : Color.color.text)
-                            
+
                             // Plus button — increase speed
                             Button {
                                 simpleSuccess()
@@ -162,6 +164,9 @@ struct VideoButton: View {
                             .padding(.vertical, 4)
                             .disabled(round(speedValue) >= 10)
                         }
+                        // Speed controls disabled in voice mode — speech pace drives scrolling
+                        .opacity(scrollMode == .voice ? 0.35 : 1)
+                        .disabled(scrollMode == .voice)
                     }
                     .frame(width: fontSpeedBar ? geometry.size.width - 30 : 48, height: 25)
                     .padding(15)
@@ -198,9 +203,9 @@ struct VideoButton: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 30, height: 30)
-                            .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.black))
-                        
-                        
+                            .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.color.text))
+
+
                     }
                 }
                 .frame(width: 78, height: 55, alignment: .center)
@@ -208,7 +213,8 @@ struct VideoButton: View {
                 .overlay {
                     if paywallViewModel.shouldShowPaywall() { premiumTag }
                 }
-                
+                .modifier(VideoModeTipModifier())
+
                 //VIDEO BUTTON ON/OFF END
                 
                 HStack {
@@ -464,6 +470,7 @@ struct VideoButton: View {
         .environment(ContentViewModel())
         .environment(VideoCameraViewModel())
         .environment(PaywallViewModel())
+        .environment(VoiceScrollViewModel())
 }
 
 extension View {

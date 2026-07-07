@@ -13,7 +13,7 @@ struct OnboardingView: View {
     var body: some View {
         TabView {
             OnboardingPage1()
-            OnboardingPage2()
+            //OnboardingPage2()
             ZStack(alignment: .bottom) {
                 PaywallView()
                 Button {

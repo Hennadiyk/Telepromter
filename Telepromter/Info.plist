@@ -9,5 +9,7 @@
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Used to follow along with the teleprompter text as you speak, automatically scrolling to match your words.</string>
 </dict>
 </plist>
