@@ -40,6 +40,7 @@ final class ContentViewModel {
     var scrollToTopToken: UUID = UUID()
     var videoOn: Bool = false
     var selectedTab: Int = 1
+    var isShowingSettingsFromTips: Bool = false
 
     init() {
         words = textInput.components(separatedBy: " ").filter { !$0.isEmpty }

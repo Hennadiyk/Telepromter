@@ -60,9 +60,10 @@ struct SettingsView: View {
                             Picker("Scroll Mode", selection: $scrollMode) {
                                 Text("Regular").tag(ScrollMode.regular)
                                 Text("In Line").tag(ScrollMode.inLine)
-                                Text("Voice").tag(ScrollMode.voice)
+                                Text("Voice(BETA)").tag(ScrollMode.voice)
                             }
                             .pickerStyle(.segmented)
+                            .modifier(ScrollModeTipModifier())
                             Text("Regular — flowing text. In Line — one word per line. Voice — text follows your speech (video mode only).")
                                 .font(.caption)
                                 .foregroundStyle(.gray)

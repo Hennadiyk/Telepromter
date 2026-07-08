@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F104356B2FFDC6B100214BB5 /* ScriptLanguageModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F104356A2FFDC6B100214BB5 /* ScriptLanguageModelManager.swift */; };
 		F10871572CD8B55C00A3987E /* ResizeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10871562CD8B55C00A3987E /* ResizeBar.swift */; };
 		F10B2A022FEDE2E6004451BD /* VoiceScrollViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B2A012FEDE2E6004451BD /* VoiceScrollViewModel.swift */; };
 		F114EE5D2CDD831700E2EDA5 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F114EE5C2CDD831700E2EDA5 /* MotionManager.swift */; };
@@ -50,6 +51,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F104356A2FFDC6B100214BB5 /* ScriptLanguageModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptLanguageModelManager.swift; sourceTree = "<group>"; };
 		F10871562CD8B55C00A3987E /* ResizeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeBar.swift; sourceTree = "<group>"; };
 		F10B2A012FEDE2E6004451BD /* VoiceScrollViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceScrollViewModel.swift; sourceTree = "<group>"; };
 		F114EE5C2CDD831700E2EDA5 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				F1439D5A2CC9F8E3000BD920 /* Haptics.swift */,
 				F114EE5C2CDD831700E2EDA5 /* MotionManager.swift */,
 				F16CAD9E2FFA37BC00372E6F /* AppTips.swift */,
+				F104356A2FFDC6B100214BB5 /* ScriptLanguageModelManager.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				F18A5DFA2E2EF8B500A88F7F /* PaywallViewModel.swift in Sources */,
 				F10B2A022FEDE2E6004451BD /* VoiceScrollViewModel.swift in Sources */,
 				F14B83F02DFB5F6500471FA7 /* CameraView.swift in Sources */,
+				F104356B2FFDC6B100214BB5 /* ScriptLanguageModelManager.swift in Sources */,
 				F18A5DF82E2B20F800A88F7F /* PaywallView.swift in Sources */,
 				F114EE5D2CDD831700E2EDA5 /* MotionManager.swift in Sources */,
 				F14B83F42DFB9E9400471FA7 /* Helper.swift in Sources */,

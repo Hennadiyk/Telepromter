@@ -90,6 +90,10 @@ struct PrompterView: View {
     @State private var scrollToTopPending = false
     @State private var callbackGeneration: Int = 0
 
+    // Coasting: fires a short forward animation when recognition gaps cause silence.
+    // Cancelled as soon as a real word match arrives (scheduleCoast reschedules it).
+    @State private var coastTask: Task<Void, Never>? = nil
+
     var body: some View {
         GeometryReader { geometry in
             animatedStack
@@ -210,7 +214,10 @@ struct PrompterView: View {
                     if scrollMode == .voice { startVoiceScrollPlayback() }
                     else { startPlayingFromLiveY() }
                 } else {
-                    if scrollMode == .voice { voiceScrollVM.stop() }
+                    if scrollMode == .voice {
+                        coastTask?.cancel()
+                        voiceScrollVM.stop()
+                    }
                     // scrollToTopPending is set in the same handler as isPlaying=false,
                     // so SwiftUI batches them — it is already true here when scroll-to-top
                     // was requested, before pauseFreezeAtLiveY() could overwrite frozenY/yOffset.
@@ -245,23 +252,34 @@ struct PrompterView: View {
                 let P = containerH * 0.5
                 let totalWords = max(1, contentVM.words.count)
                 let wps = max(0.5, voiceScrollVM.wordsPerSecond)
-                let wordsDelta = max(1, newIndex - oldIndex)
 
-                // Hard-cap lookahead at 1.5 words so a burst batch never scrolls
-                // past many words at once — this is the main cause of "too fast" skipping.
-                let lookahead = min(wps * 0.3, 1.5)
+                // Lookahead keeps upcoming words visible ahead of the current spoken
+                // word — 2 seconds of speech ahead, capped at 8 words.
+                let lookahead = min(wps * 0.86, 4.0)
                 let predictedIndex = min(Double(newIndex) + lookahead, Double(totalWords - 1))
                 let predictedProgress = predictedIndex / Double(totalWords)
                 let animTarget = (baseOffset + CGFloat(predictedProgress) * contentH - P) / distance
-                let clamped = max(animProgress, max(0, animTarget))
-                guard clamped > animProgress + 0.00001 else { return }
 
-                // Duration bridges to next batch at current pace; 0.45 s minimum keeps
-                // motion smooth rather than choppy between short batches.
-                let duration = max(0.45, Double(wordsDelta) / wps + 0.15)
+                // Allow up to 3 words of backward correction so that real matches can
+                // override a coast overshoot or re-alignment rewind without freezing the
+                // scroll. Large backward jumps (recognition confusion) are still blocked.
+                let wordProgressUnit = CGFloat(contentH / (distance * Double(totalWords)))
+                let minAllowedProgress = animProgress - 3.0 * wordProgressUnit
+                let clamped = max(minAllowedProgress, max(0, animTarget))
+                guard abs(clamped - animProgress) > 0.00001 else { return }
+
+                // Duration is proportional to distance jumped (forward OR backward) so
+                // small re-alignment slides are fast and large steps are smooth.
+                let wordsDelta = abs(newIndex - oldIndex)
+                let duration = max(0.45, Double(max(1, wordsDelta)) / wps + 0.15)
                 withAnimation(.linear(duration: duration)) {
                     animProgress = clamped
                 }
+
+                // Schedule a coast in case no new match arrives in the next 700 ms
+                // (recognition restart gap after a pause). The coast keeps the scroll
+                // moving visually instead of freezing.
+                scheduleCoast(wps: wps, wordIndex: newIndex)
             }
             .onChange(of: scrollMode, initial: false) { oldMode, newMode in
                 if newMode == .voice {
@@ -403,6 +421,38 @@ struct PrompterView: View {
     private func stopVoiceScrollPlayback() {
         voiceScrollVM.stop()
         pauseFreezeAtLiveY()
+    }
+
+    // MARK: - Coast animation (keeps scroll moving during recognition restart gaps)
+
+    // Schedules a short forward coast if no new word match arrives within 700 ms.
+    // Each real match cancels and reschedules this, so the coast only fires during
+    // genuine silence gaps after a pause. The coast is intentionally small (1 s) to
+    // stay within the 3-word backward-correction budget, so real matches can always
+    // override it once recognition recovers.
+    private func scheduleCoast(wps: Double, wordIndex: Int) {
+        coastTask?.cancel()
+        coastTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(700))
+            guard !Task.isCancelled, scrollMode == .voice, contentVM.isPlaying else { return }
+            performCoastAnimation(wps: wps)
+        }
+    }
+
+    private func performCoastAnimation(wps: Double) {
+        let contentH = contentVM.textContentHeight
+        let containerH = contentVM.textInputWindowHeight
+        let distance = containerH + contentH
+        guard distance > 0, contentH > 0, contentVM.words.count > 1 else { return }
+        // 1-second coast at reading speed. Kept deliberately short so the overshoot
+        // stays ≤ wps words ahead — within the 3-word backward-correction budget in
+        // onChange(of: matchedWordIndex), ensuring real matches can always recover.
+        let coastDuration = 1.0
+        let progressDelta = CGFloat(wps * coastDuration * contentH / (distance * Double(contentVM.words.count)))
+        guard progressDelta > 0.00001 else { return }
+        withAnimation(.linear(duration: coastDuration)) {
+            animProgress += progressDelta
+        }
     }
 }
 

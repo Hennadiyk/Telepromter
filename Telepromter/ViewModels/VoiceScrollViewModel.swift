@@ -29,9 +29,11 @@ final class VoiceScrollViewModel {
 
     // Incremented on every start() AND every restartSession(). Completion handlers
     // capture this value at task-creation time; if it no longer matches when the
-    // handler fires, the handler exits silently. This is the sole cascade-prevention
-    // mechanism — no pendingRestartWork DispatchWorkItem is needed.
+    // handler fires, the handler exits silently — this is the cascade-prevention mechanism.
     @ObservationIgnored private var sessionGeneration = 0
+
+    // Fires if no recognition result arrives for 4 seconds, forcing a recovery restart.
+    @ObservationIgnored private var watchdogTask: Task<Void, Never>?
 
     @ObservationIgnored private var recognizer: SFSpeechRecognizer?
     @ObservationIgnored private var recognitionTask: SFSpeechRecognitionTask?
@@ -79,8 +81,10 @@ final class VoiceScrollViewModel {
         wordsPerSecond       = 2.5
         matchedWordIndex     = currentWordIndex
 
-        sessionGeneration   += 1          // invalidate all callbacks from prior session
+        sessionGeneration   += 1
         isActive             = true
+
+        scheduleLanguageModelPrep(words: words)
         beginRecognitionSession()
     }
 
@@ -92,6 +96,8 @@ final class VoiceScrollViewModel {
     // MARK: - Session teardown
 
     private func tearDownSession() {
+        watchdogTask?.cancel()
+        watchdogTask = nil
         recognitionTask?.cancel(); recognitionTask = nil
         recognitionRequest = nil
         audioEngine?.stop()
@@ -100,7 +106,21 @@ final class VoiceScrollViewModel {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 
-    // MARK: - Recognition session (cold start — always called from start() or cold restart)
+    // MARK: - Watchdog
+
+    // Resets the 4-second watchdog timer. Called whenever a recognition result arrives
+    // and whenever a new task starts. If 4 seconds pass with no result, we force a
+    // full restart as a safety net against any stuck-recognition edge case.
+    private func resetWatchdog() {
+        watchdogTask?.cancel()
+        watchdogTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(4))
+            guard let self, self.isActive, !Task.isCancelled else { return }
+            self.restartSession(silently: false)
+        }
+    }
+
+    // MARK: - Recognition session (cold start)
 
     private func beginRecognitionSession() {
         let gen = sessionGeneration
@@ -110,14 +130,7 @@ final class VoiceScrollViewModel {
                   ?? SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
         recognizer?.defaultTaskHint = .dictation
 
-        let request = SFSpeechAudioBufferRecognitionRequest()
-        request.shouldReportPartialResults = true
-        // Use on-device only when the model is confirmed downloaded — avoids the
-        // aggressive silence timeouts that on-device triggers when unavailable.
-        if recognizer?.supportsOnDeviceRecognition == true {
-            request.requiresOnDeviceRecognition = true
-        }
-        if #available(iOS 16, *) { request.addsPunctuation = false }
+        let request = makeRequest()
         recognitionRequest = request
 
         do {
@@ -146,76 +159,128 @@ final class VoiceScrollViewModel {
         }
         audioEngine = engine
 
-        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
-            Task { @MainActor [weak self] in
-                guard let self, self.isActive, self.sessionGeneration == gen else { return }
-                if let result { self.handleResult(result) }
-                if error != nil || result?.isFinal == true {
-                    self.restartSession()
-                }
-            }
-        }
+        startRecognitionTask(request: request, gen: gen)
     }
 
-    // MARK: - Error/silence restart
+    // MARK: - Session restart
 
-    private func restartSession() {
-        // Increment generation FIRST — any completion handlers that fire after this
-        // (e.g. the cancel-triggered error from the task we're about to cancel) will
-        // capture stale gen values and silently exit, preventing cascade restarts.
+    /// Restarts the recognition task after an isFinal or error.
+    ///
+    /// - Parameter silently: When `true`, word position and alignment are preserved.
+    ///   Use this for empty-transcript isFinal events caused by silence detection —
+    ///   they don't represent real end-of-utterance and rewinding would push the search
+    ///   window behind the user's actual position. When `false`, rewind slightly and
+    ///   clear alignment so the window re-locks on the next spoken word.
+    private func restartSession(silently: Bool) {
         sessionGeneration += 1
         let gen = sessionGeneration
 
-        recognitionRequest = nil        // stop audio feeding immediately
-        recognitionTask?.cancel()       // its completion fires with stale gen → no cascade
-        recognitionTask = nil
         processedSpokenCount = 0
 
-        // Only rewind currentWordIndex the first time after aligned speech.
-        // Without this guard, cascade isFinal fires during silence would walk
-        // currentWordIndex all the way back to 0, pushing the search window
-        // far behind the user's actual position.
-        if isAligned {
+        if !silently, isAligned {
+            // Small rewind on real end-of-utterance restarts so the user can repeat
+            // a phrase. Kept at 3 words (down from 6) to minimise scroll backward
+            // correction needed when the animation catches up.
             let rewindBy = min(3, currentWordIndex)
             currentWordIndex -= rewindBy
             isAligned = false
         }
-        searchWindowEnd = min(currentWordIndex + 20, scriptTokens.count - 1)
+        searchWindowEnd = min(currentWordIndex + 60, scriptTokens.count - 1)
 
-        guard isActive else { return }
+        guard isActive else {
+            watchdogTask?.cancel()
+            watchdogTask = nil
+            recognitionRequest = nil
+            recognitionTask?.cancel()
+            recognitionTask = nil
+            return
+        }
 
         if let engine = audioEngine, engine.isRunning {
-            // Hot restart: reuse running engine, swap request and task immediately.
-            // No delay — a gap here would swallow the first syllable after a pause,
-            // preventing re-alignment when the user resumes speaking.
             let locale = Locale.current
             recognizer = SFSpeechRecognizer(locale: locale)
                       ?? SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
             recognizer?.defaultTaskHint = .dictation
 
-            let request = SFSpeechAudioBufferRecognitionRequest()
-            request.shouldReportPartialResults = true
-            if recognizer?.supportsOnDeviceRecognition == true {
-                request.requiresOnDeviceRecognition = true
-            }
-            if #available(iOS 16, *) { request.addsPunctuation = false }
-            recognitionRequest = request    // audio flows to new request immediately
+            let request = makeRequest()
 
-            recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
-                Task { @MainActor [weak self] in
-                    guard let self, self.isActive, self.sessionGeneration == gen else { return }
-                    if let result { self.handleResult(result) }
-                    if error != nil || result?.isFinal == true {
-                        self.restartSession()
-                    }
-                }
-            }
+            // Atomic swap: audio tap keeps flowing into the new request immediately —
+            // no gap between old and new session. The old task cancel fires with a
+            // stale gen value and exits silently.
+            recognitionRequest = request
+            recognitionTask?.cancel()
+            recognitionTask = nil
+
+            startRecognitionTask(request: request, gen: gen)
         } else {
-            // Cold restart: engine stopped due to system audio interruption.
+            // Cold restart: engine was killed by a system audio interruption.
+            recognitionRequest = nil
+            recognitionTask?.cancel()
+            recognitionTask = nil
             audioEngine?.inputNode.removeTap(onBus: 0)
             audioEngine?.stop()
             audioEngine = nil
             beginRecognitionSession()
+        }
+    }
+
+    // MARK: - Recognition task factory
+
+    private func startRecognitionTask(request: SFSpeechAudioBufferRecognitionRequest, gen: Int) {
+        recognitionTask = recognizer?.recognitionTask(with: request) { [weak self] result, error in
+            Task { @MainActor [weak self] in
+                guard let self, self.isActive, self.sessionGeneration == gen else { return }
+
+                if let result { self.handleResult(result) }
+
+                if result?.isFinal == true {
+                    // Distinguish between two kinds of isFinal:
+                    //
+                    // 1. Empty transcript — Apple's silence/VAD detector ended the
+                    //    utterance with nothing recognized. This happens when a new
+                    //    task starts with buffered silence from the user's pause.
+                    //    Restarting with a FULL restart here creates a cascade:
+                    //    each new task also sees silence and immediately fires isFinal,
+                    //    potentially forever. A SILENT restart preserves word position
+                    //    and alignment so re-alignment is instant once speech resumes.
+                    //
+                    // 2. Non-empty transcript — the user actually finished an utterance.
+                    //    Full restart: small rewind, clear alignment, re-lock on next word.
+                    let transcript = result?.bestTranscription.formattedString
+                        .trimmingCharacters(in: .whitespaces) ?? ""
+                    self.restartSession(silently: transcript.isEmpty)
+                } else if error != nil {
+                    self.restartSession(silently: false)
+                }
+            }
+        }
+        resetWatchdog()
+    }
+
+    // MARK: - Request factory
+
+    private func makeRequest() -> SFSpeechAudioBufferRecognitionRequest {
+        let request = SFSpeechAudioBufferRecognitionRequest()
+        request.shouldReportPartialResults = true
+        if recognizer?.supportsOnDeviceRecognition == true {
+            request.requiresOnDeviceRecognition = true
+        }
+        if #available(iOS 16, *) { request.addsPunctuation = false }
+        if #available(iOS 17, *) {
+            request.customizedLanguageModel = ScriptLanguageModelManager.shared.configuration
+        }
+        if !scriptTokens.isEmpty, currentWordIndex < scriptTokens.count {
+            let endIdx = min(currentWordIndex + 10, scriptTokens.count)
+            request.contextualStrings = Array(scriptTokens[currentWordIndex..<endIdx])
+        }
+        return request
+    }
+
+    // MARK: - Language model preparation
+
+    private func scheduleLanguageModelPrep(words: [String]) {
+        if #available(iOS 17, *) {
+            ScriptLanguageModelManager.shared.prepare(words: words, locale: Locale.current)
         }
     }
 
@@ -244,13 +309,15 @@ final class VoiceScrollViewModel {
         }
         lastBatchTime = now
         matchedWordIndex = currentWordIndex
+
+        // Receipt of a real result means recognition is alive — reset the watchdog.
+        resetWatchdog()
     }
 
     private func tryAdvance(spokenWord: String) {
         guard currentWordIndex < scriptTokens.count else { return }
 
         if !isAligned {
-            // Scan visible window to find where the user actually is on screen
             let windowEnd = min(searchWindowEnd + 1, scriptTokens.count)
             for i in currentWordIndex..<windowEnd {
                 if wordsMatch(spokenWord, scriptTokens[i]) {
@@ -262,7 +329,7 @@ final class VoiceScrollViewModel {
             return
         }
 
-        for skip in 0...2 {
+        for skip in 0...4 {
             let i = currentWordIndex + skip
             guard i < scriptTokens.count else { break }
             if wordsMatch(spokenWord, scriptTokens[i]) {

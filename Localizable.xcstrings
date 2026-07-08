@@ -534,7 +534,38 @@
       }
     },
     "Enter Your Script" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Skript eingeben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Introduce tu guion"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ingresa tu guión"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Saisissez votre script"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "अपनी स्क्रिप्ट दर्ज करें"
+          }
+        }
+      }
     },
     "Feature Request" : {
       "localizations" : {
@@ -1213,7 +1244,38 @@
       }
     },
     "Move & Resize" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Verschieben & Skalieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mover y redimensionar"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mover & redimensionar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Déplacer et redimensionner"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "मूव & रीसाइज़ करें"
+          }
+        }
+      }
     },
     "My Account" : {
       "localizations" : {
@@ -1323,7 +1385,38 @@
 
     },
     "P" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "P"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "P"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "P"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "P"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "P"
+          }
+        }
+      }
     },
     "PAUSE" : {
       "localizations" : {
@@ -1430,7 +1523,38 @@
       }
     },
     "Play / Pause" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Wiedergabe / Pause"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reproducir / Pausa"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reproducir / Pausa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Lecture / Pause"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "चलाएं / रोकें"
+          }
+        }
+      }
     },
     "Please enter your text" : {
       "localizations" : {
@@ -1485,10 +1609,72 @@
       }
     },
     "Premium" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Premium"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Premium"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Premium"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Premium"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "प्रीमियम"
+          }
+        }
+      }
     },
     "PREMIUM" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "PREMIUM"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "PREMIUM"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "PREMIUM"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "PREMIUM"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "प्रीमियम"
+          }
+        }
+      }
     },
     "Privacy Policy" : {
       "localizations" : {
@@ -2166,6 +2352,40 @@
         }
       }
     },
+    "Scrolling Modes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Scroll-Modi"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Modos de desplazamiento"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Modos de desplazamiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Modes de défilement"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "स्क्रॉलिंग मोड्स"
+          }
+        }
+      }
+    },
     "Select Duration" : {
       "localizations" : {
         "de" : {
@@ -2271,7 +2491,38 @@
       }
     },
     "Settings & Account" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Einstellungen & Konto"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ajustes y cuenta"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Ajustes & cuenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Paramètres et compte"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "सेटिंग्स & खाता"
+          }
+        }
+      }
     },
     "Show Guides" : {
       "localizations" : {
@@ -2325,22 +2576,25 @@
         }
       }
     },
-    "Step 1 of 6  —  Long press to drag the teleprompter window. Drag the corner handle to resize it." : {
+    "Step 1 of 7  —  Long press to drag the teleprompter window. Drag the corner handle to resize it." : {
 
     },
-    "Step 2 of 6  —  Tap to start scrolling your script. Tap again to pause." : {
+    "Step 2 of 7  —  Tap to start scrolling your script. Tap again to pause." : {
 
     },
-    "Step 3 of 6  —  Adjust text size with the left +/− and scroll speed with the right +/−. Tap the icons to show or hide the controls." : {
+    "Step 3 of 7  —  Adjust text size with the left +/− and scroll speed with the right +/−. Tap the icons to show or hide the controls." : {
 
     },
-    "Step 4 of 6  —  Tap to enable the camera. Press the record button to film yourself reading the script. Premium - subscription required" : {
+    "Step 4 of 7  -  Tap to enable the camera. Press the record button to film yourself reading the script. Premium - subscription required" : {
 
     },
-    "Step 5 of 6  —  Type or paste your script here, or tap Import to load a PDF or text file." : {
+    "Step 5 of 7  -  Type or paste your script here, or tap Import to load a PDF or text file." : {
 
     },
-    "Step 6 of 6  —  Change scroll mode, colors, and more in Settings. Manage your subscription or send a feature request from here." : {
+    "Step 6 of 7  -  Change scroll mode, colors, and more in Settings. Manage your subscription or send a feature request from here." : {
+
+    },
+    "Step 7 of 7 - Regular - flowing text scrolls continuously. In Line - one word at a time. Voice (Beta) - text follows your speech automatically." : {
 
     },
     "Submission Status" : {
@@ -2501,6 +2755,24 @@
     },
     "Teleprompter" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2528,10 +2800,84 @@
       }
     },
     "Teleprompter DE" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE"
+          }
+        }
+      }
     },
     "Teleprompter DE v%@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        }
+      }
     },
     "Teleprompter with two scroll options" : {
       "localizations" : {
@@ -2638,10 +2984,72 @@
       }
     },
     "Text Size & Speed" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Textgröße & Geschwindigkeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tamaño de texto y velocidad"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tamaño de texto & velocidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Taille du texte et vitesse"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "टेक्स्ट साइज़ & स्पीड"
+          }
+        }
+      }
     },
     "Video Mode" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Videomodus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Modo de vídeo"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Modo de vídeo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mode vidéo"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "वीडियो मोड"
+          }
+        }
+      }
     },
     "Video saved to Photos" : {
       "localizations" : {
@@ -2748,6 +3156,7 @@
       }
     },
     "Voice" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2847,6 +3256,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прокрутка голосом"
+          }
+        }
+      }
+    },
+    "Voice(BETA)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Stimme(BETA)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Voz(BETA)"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Voz(BETA)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Voix(BETA)"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "वॉइस(BETA)"
           }
         }
       }
@@ -3008,5 +3451,5 @@
       }
     }
   },
-  "version" : "1.2"
+  "version" : "1.3"
 }

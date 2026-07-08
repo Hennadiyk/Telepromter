@@ -31,7 +31,7 @@ struct ContentView: View {
                             .toolbar(contentViewModel.videoOn ? .hidden : .visible, for: .tabBar)
                     }
 
-                    Tab("Account", systemImage: "person.crop.circle", value: 2, role: UIDevice.isIPad ? .none : .search) {
+                    Tab("Account", systemImage: "circle.fill", value: 2, role: UIDevice.isIPad ? .none : .search) {
                         AccountDetailsView()
                     }
                 }

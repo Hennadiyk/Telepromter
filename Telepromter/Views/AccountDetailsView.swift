@@ -9,9 +9,12 @@ import StoreKit
 
 struct AccountDetailsView: View {
     @Environment(PaywallViewModel.self) private var paywallViewModel
+    @Environment(ContentViewModel.self) private var contentViewModel
 
     var body: some View {
-        NavigationView {
+        @Bindable var contentViewModel = contentViewModel
+
+        NavigationStack {
             ZStack {
                 BackgroundView()
                     .opacity(0.4)
@@ -97,9 +100,11 @@ struct AccountDetailsView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .scrollContentBackground(.hidden)
                 .background(.ultraThinMaterial.opacity(0.5))
+                .navigationDestination(isPresented: $contentViewModel.isShowingSettingsFromTips) {
+                    SettingsView()
+                }
             }
         }
-        .navigationViewStyle(.stack)
         .sheet(isPresented: Bindable(paywallViewModel).isPresented) {
             PaywallView()
         }
@@ -110,6 +115,7 @@ struct AccountDetailsView: View {
     AccountDetailsView()
         .environment(VideoCameraViewModel())
         .environment(PaywallViewModel())
+        .environment(ContentViewModel())
 }
 
 extension AccountDetailsView {
