@@ -564,6 +564,24 @@
             "state" : "machine_translated",
             "value" : "अपनी स्क्रिप्ट दर्ज करें"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci il tuo script"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите ваш сценарий"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть свій сценарій"
+          }
         }
       }
     },
@@ -1274,6 +1292,24 @@
             "state" : "machine_translated",
             "value" : "मूव & रीसाइज़ करें"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta e ridimensiona"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переместить и изменить размер"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемістити та змінити розмір"
+          }
         }
       }
     },
@@ -1415,6 +1451,24 @@
             "state" : "machine_translated",
             "value" : "P"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "P"
+          }
         }
       }
     },
@@ -1553,6 +1607,24 @@
             "state" : "machine_translated",
             "value" : "चलाएं / रोकें"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduci / Pausa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизведение / Пауза"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворити / Пауза"
+          }
         }
       }
     },
@@ -1639,6 +1711,24 @@
             "state" : "machine_translated",
             "value" : "प्रीमियम"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Премиум"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Преміум"
+          }
         }
       }
     },
@@ -1672,6 +1762,24 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "प्रीमियम"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PREMIUM"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ПРЕМИУМ"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ПРЕМІУМ"
           }
         }
       }
@@ -2383,6 +2491,24 @@
             "state" : "machine_translated",
             "value" : "स्क्रॉलिंग मोड्स"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità di scorrimento"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режимы прокрутки"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режими прокручування"
+          }
         }
       }
     },
@@ -2521,6 +2647,24 @@
             "state" : "machine_translated",
             "value" : "सेटिंग्स & खाता"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostazioni e account"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки и аккаунт"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Налаштування та обліковий запис"
+          }
         }
       }
     },
@@ -2577,25 +2721,368 @@
       }
     },
     "Step 1 of 7  —  Long press to drag the teleprompter window. Drag the corner handle to resize it." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 1 von 7  —  Lange drücken, um das Teleprompter-Fenster zu verschieben. Ziehe den Eckgriff, um es zu skalieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 1 de 7  —  Mantén pulsado para arrastrar la ventana del teleprompter. Arrastra el manejador de la esquina para redimensionarla."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 1 de 7  —  Mantén presionado para arrastrar la ventana del teleprompter. Arrastra el manejador de la esquina para redimensionarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 1 sur 7  —  Appui long pour déplacer la fenêtre du téléprompteur. Faites glisser la poignée d'angle pour la redimensionner."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 1 of 7  —  टेलीप्रॉम्पटर विंडो को खींचने के लिए लंबे समय तक दबाएं। आकार बदलने के लिए कोने के हैंडल को खींचें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 1 di 7  —  Tieni premuto per spostare la finestra del teleprompter. Trascina il punto d'angolo per ridimensionarla."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 1 из 7  —  Нажмите и удерживайте, чтобы перетащить окно телепромптера. Потяните за угловой маркер, чтобы изменить размер."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 1 з 7  —  Натисніть і утримуйте, щоб перетягнути вікно телепромптера. Потягніть кутовий маркер, щоб змінити розмір."
+          }
+        }
+      }
     },
     "Step 2 of 7  —  Tap to start scrolling your script. Tap again to pause." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 2 von 7  —  Tippe, um das Scrollen deines Skripts zu starten. Tippe erneut zum Pausieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 2 de 7  —  Toca para comenzar a desplazar tu guión. Toca de nuevo para pausar."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 2 de 7  —  Toca para comenzar a desplazar tu guión. Toca de nuevo para pausar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 2 sur 7  —  Appuyez pour commencer à faire défiler votre script. Appuyez à nouveau pour mettre en pause."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 2 of 7  —  अपनी स्क्रिप्ट स्क्रॉल करना शुरू करने के लिए टैप करें। रोकने के लिए फिर से टैप करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 2 di 7  —  Tocca per iniziare a scorrere il tuo script. Tocca di nuovo per mettere in pausa."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 2 из 7  —  Нажмите, чтобы начать прокрутку сценария. Нажмите снова, чтобы поставить на паузу."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 2 з 7  —  Натисніть, щоб почати прокрутку сценарію. Натисніть ще раз, щоб поставити на паузу."
+          }
+        }
+      }
     },
     "Step 3 of 7  —  Adjust text size with the left +/− and scroll speed with the right +/−. Tap the icons to show or hide the controls." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 3 von 7  —  Passe die Textgröße mit dem linken +/− und die Scrollgeschwindigkeit mit dem rechten +/− an. Tippe auf die Symbole, um die Steuerelemente ein- oder auszublenden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 3 de 7  —  Ajusta el tamaño del texto con el +/− izquierdo y la velocidad de desplazamiento con el +/− derecho. Toca los iconos para mostrar u ocultar los controles."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 3 de 7  —  Ajusta el tamaño del texto con el +/− izquierdo y la velocidad de desplazamiento con el +/− derecho. Toca los iconos para mostrar u ocultar los controles."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 3 sur 7  —  Ajustez la taille du texte avec le +/− gauche et la vitesse de défilement avec le +/− droit. Appuyez sur les icônes pour afficher ou masquer les commandes."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 3 of 7  —  बाएं +/− से टेक्स्ट साइज़ और दाएं +/− से स्क्रॉल स्पीड समायोजित करें। नियंत्रण दिखाने या छुपाने के लिए आइकन पर टैप करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 3 di 7  —  Regola la dimensione del testo con il +/− sinistro e la velocità di scorrimento con il +/− destro. Tocca le icone per mostrare o nascondere i controlli."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 3 из 7  —  Настройте размер текста с помощью левого +/−, а скорость прокрутки — с помощью правого +/−. Нажмите на значки, чтобы показать или скрыть элементы управления."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 3 з 7  —  Налаштуйте розмір тексту лівим +/−, а швидкість прокрутки — правим +/−. Торкніться іконок, щоб показати або приховати елементи керування."
+          }
+        }
+      }
     },
     "Step 4 of 7  -  Tap to enable the camera. Press the record button to film yourself reading the script. Premium - subscription required" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 4 von 7  -  Tippe, um die Kamera zu aktivieren. Drücke die Aufnahmetaste, um dich beim Lesen des Skripts zu filmen. Premium – Abonnement erforderlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 4 de 7  -  Toca para activar la cámara. Pulsa el botón de grabar para filmarte leyendo el guión. Premium - se requiere suscripción"
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 4 de 7  -  Toca para activar la cámara. Pulsa el botón de grabar para filmarte leyendo el guión. Premium - se requiere suscripción"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 4 sur 7  -  Appuyez pour activer la caméra. Appuyez sur le bouton d'enregistrement pour vous filmer en train de lire le script. Premium - abonnement requis"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 4 of 7  -  कैमरा सक्षम करने के लिए टैप करें। स्क्रिप्ट पढ़ते हुए खुद को फिल्म करने के लिए रिकॉर्ड बटन दबाएं। प्रीमियम - सदस्यता आवश्यक है"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 4 di 7  -  Tocca per abilitare la fotocamera. Premi il tasto di registrazione per filmarti mentre leggi lo script. Premium - abbonamento richiesto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 4 из 7  -  Нажмите, чтобы включить камеру. Нажмите кнопку записи, чтобы снять себя при чтении сценария. Премиум — требуется подписка"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 4 з 7  -  Натисніть, щоб увімкнути камеру. Натисніть кнопку запису, щоб зняти себе під час читання сценарію. Преміум — потрібна підписка"
+          }
+        }
+      }
     },
     "Step 5 of 7  -  Type or paste your script here, or tap Import to load a PDF or text file." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 5 von 7  -  Gib dein Skript hier ein oder füge es ein, oder tippe auf Importieren, um eine PDF- oder Textdatei zu laden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 5 de 7  -  Escribe o pega tu guión aquí, o toca Importar para cargar un archivo PDF o de texto."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 5 de 7  -  Escribe o pega tu guión aquí, o toca Importar para cargar un archivo PDF o de texto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 5 sur 7  -  Saisissez ou collez votre script ici, ou appuyez sur Importer pour charger un fichier PDF ou texte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 5 of 7  -  अपनी स्क्रिप्ट यहाँ टाइप करें या पेस्ट करें, या PDF या टेक्स्ट फ़ाइल लोड करने के लिए आयात टैप करें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 5 di 7  -  Scrivi o incolla il tuo script qui, oppure tocca Importa per caricare un PDF o un file di testo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 5 из 7  -  Введите или вставьте свой сценарий здесь, или нажмите «Импорт», чтобы загрузить PDF или текстовый файл."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 5 з 7  -  Введіть або вставте свій сценарій тут, або натисніть «Імпорт», щоб завантажити PDF або текстовий файл."
+          }
+        }
+      }
     },
     "Step 6 of 7  -  Change scroll mode, colors, and more in Settings. Manage your subscription or send a feature request from here." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 6 von 7  -  Ändere den Scroll-Modus, Farben und mehr in den Einstellungen. Verwalte dein Abonnement oder sende eine Funktionsanfrage von hier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 6 de 7  -  Cambia el modo de desplazamiento, colores y más en Ajustes. Gestiona tu suscripción o envía una solicitud de función desde aquí."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 6 de 7  -  Cambia el modo de desplazamiento, colores y más en Ajustes. Gestiona tu suscripción o envía una solicitud de función desde aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 6 sur 7  -  Changez le mode de défilement, les couleurs et plus encore dans Paramètres. Gérez votre abonnement ou envoyez une demande de fonctionnalité depuis ici."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 6 of 7  -  सेटिंग्स में स्क्रॉल मोड, रंग और अधिक बदलें। यहाँ से अपनी सदस्यता प्रबंधित करें या फ़ीचर अनुरोध भेजें।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 6 di 7  -  Cambia la modalità di scorrimento, i colori e altro nelle Impostazioni. Gestisci il tuo abbonamento o invia una richiesta di funzionalità da qui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 6 из 7  -  Измените режим прокрутки, цвета и многое другое в Настройках. Управляйте подпиской или отправьте запрос на функцию отсюда."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 6 з 7  -  Змініть режим прокрутки, кольори та інше в Налаштуваннях. Керуйте підпискою або надішліть запит на функцію звідси."
+          }
+        }
+      }
     },
     "Step 7 of 7 - Regular - flowing text scrolls continuously. In Line - one word at a time. Voice (Beta) - text follows your speech automatically." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schritt 7 von 7 - Normal - Fließtext scrollt kontinuierlich. Einzeilig - ein Wort auf einmal. Stimme (Beta) - Text folgt automatisch deiner Rede."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 7 de 7 - Normal - el texto fluido se desplaza continuamente. En línea - una palabra a la vez. Voz (Beta) - el texto sigue tu discurso automáticamente."
+          }
+        },
+        "es-DO" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paso 7 de 7 - Normal - el texto fluido se desplaza continuamente. En línea - una palabra a la vez. Voz (Beta) - el texto sigue tu discurso automáticamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Étape 7 sur 7 - Normal - le texte fluide défile en continu. En ligne - un mot à la fois. Voix (Bêta) - le texte suit automatiquement votre discours."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरण 7 of 7 - सामान्य - प्रवाहमान टेक्स्ट लगातार स्क्रॉल होता है। इन लाइन - एक बार में एक शब्द। वॉइस (बीटा) - टेक्स्ट स्वचालित रूप से आपकी बोली का अनुसरण करता है।"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passaggio 7 di 7 - Normale - il testo scorrevole scorre in modo continuo. In linea - una parola alla volta. Voce (Beta) - il testo segue automaticamente il tuo discorso."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шаг 7 из 7 - Обычный — плавный текст прокручивается непрерывно. Построчно — одно слово за раз. Голос (Бета) — текст автоматически следует вашей речи."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крок 7 з 7 - Звичайний — плаваючий текст прокручується безперервно. Построково — одне слово за раз. Голос (Бета) — текст автоматично слідує за вашим мовленням."
+          }
+        }
+      }
     },
     "Submission Status" : {
       "localizations" : {
@@ -2785,6 +3272,12 @@
             "value" : "टेलीप्रॉम्पटर"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2837,6 +3330,12 @@
             "value" : "Teleprompter DE"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter DE"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "machine_translated",
@@ -2874,6 +3373,24 @@
         "hi" : {
           "stringUnit" : {
             "state" : "machine_translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter DE v%@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Teleprompter DE v%@"
           }
         }
@@ -3014,6 +3531,24 @@
             "state" : "machine_translated",
             "value" : "टेक्स्ट साइज़ & स्पीड"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensione testo e velocità"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Размер текста и скорость"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Розмір тексту та швидкість"
+          }
         }
       }
     },
@@ -3047,6 +3582,24 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "वीडियो मोड"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità video"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим видео"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відеорежим"
           }
         }
       }
@@ -3237,6 +3790,24 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "वॉइस(BETA)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voce(BETA)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голос(BETA)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голос(BETA)"
           }
         }
       }
