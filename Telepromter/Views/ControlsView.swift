@@ -28,6 +28,7 @@ struct ControlsView: View {
     @State private var showAlert = false
     @State private var hasDragged = false
     @State private var scrollProgress: Double = 0
+    @State private var geometrySize: CGSize = .zero
     @AppStorage("showLevelIndicator") private var showLevelIndicator: Bool = true
     @AppStorage("scrollMode") private var scrollMode: ScrollMode = .regular
 
@@ -38,7 +39,14 @@ struct ControlsView: View {
         let dragGesture = DragGesture(minimumDistance: 0)
             .onChanged { value in
                 guard isDragging else { return }
-                offset = CGSize(width: lastOffset.width + value.translation.width, height: lastOffset.height + value.translation.height)
+                let newX = lastOffset.width + value.translation.width
+                let newY = lastOffset.height + value.translation.height
+                let prompterWidth = currentAmountWidth > 0 ? currentAmountWidth : finalAmountWidth
+                let prompterHeight = currentAmountHeight > 0 ? currentAmountHeight : finalAmountHeight
+                offset = CGSize(
+                    width: max(0, min(newX, geometrySize.width - prompterWidth)),
+                    height: max(0, min(newY, geometrySize.height - prompterHeight))
+                )
                 complexSuccess()
             }
             .onEnded { _ in
@@ -124,8 +132,8 @@ struct ControlsView: View {
                                 Alert(title: Text("Please enter your text"), message: nil, dismissButton: .default(Text("OK")))
                             }
                         }
-                        
-                       
+
+
 
                         ResizeBar(progress: $scrollProgress)
                             .clipped()
@@ -152,32 +160,50 @@ struct ControlsView: View {
                                         }
                                     }
                             )
-                        
-                            
+
+
                     }
                 }
                 .opacity(isDragging ? 0.6 : 1)
-                
-
-                VideoButton(fontSpeedBar: $fontSpeedBar)
-                    .padding(.horizontal, 20)
 
                 Color.clear
                     .preference(key: SizePreferenceKey.self, value: geometry.size)
             }
-           
+
             .onPreferenceChange(SizePreferenceKey.self) { newSize in
+                geometrySize = newSize
+                // Leave at least 130 pts at the bottom for VideoButton controls
+                let maxHeight = max(100, newSize.height - (UIDevice.isIPad ? 100 : 130))
                 if !hasDragged {
                     finalAmountWidth = newSize.width - (UIDevice.isIPad ? 110 : 85)
+                    finalAmountHeight = min(finalAmountHeight, maxHeight)
                     let topPadding: CGFloat = 20.0
                     offset = CGSize(width: (newSize.width - finalAmountWidth) / 2, height: topPadding)
                     lastOffset = offset
+                } else {
+                    // Shrink window height if it no longer fits after rotation
+                    if finalAmountHeight > maxHeight {
+                        finalAmountHeight = maxHeight
+                    }
+                    // Re-clamp position so the window stays fully on screen
+                    let clampedX = max(0, min(offset.width, newSize.width - finalAmountWidth))
+                    let clampedY = max(0, min(offset.height, newSize.height - finalAmountHeight))
+                    withAnimation(.bouncy) {
+                        offset = CGSize(width: clampedX, height: clampedY)
+                        lastOffset = offset
+                    }
                 }
             }
+
+            VideoButton(fontSpeedBar: $fontSpeedBar)
+                .padding(.horizontal, 20)
+                .allowsHitTesting(true)
         }
-        .onTapGesture {
-            withAnimation(.bouncy) { fontSpeedBar = false }
-        }
+        .simultaneousGesture(
+            TapGesture().onEnded {
+                withAnimation(.bouncy) { fontSpeedBar = false }
+            }
+        )
         .alert(cameraViewModel.alertMessage, isPresented: $cameraViewModel.showAlert) {
             Button("OK", role: .cancel) {}
         }

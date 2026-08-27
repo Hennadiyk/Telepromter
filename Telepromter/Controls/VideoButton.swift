@@ -180,34 +180,32 @@ struct VideoButton: View {
                 
                 
                 //VIDEO BUTTON ON/OFF
-                HStack{
-                    Button {
-                        simpleSuccess()
-                        if paywallViewModel.shouldShowPaywall() {
-                            paywallViewModel.isPresented = true
-                        } else {
-                            withAnimation(.bouncy) {
-                                isPremium = false
-                                contentVM.videoOn.toggle()
-                                if !contentVM.videoOn {
-                                    if cameraViewModel.isRecording {
-                                        cameraViewModel.stopRecording()
-                                    }
-                                    cameraViewModel.stopSession()
-                                    cameraViewModel.audioLevel = 0.0
+                Button {
+                    simpleSuccess()
+                    if paywallViewModel.shouldShowPaywall() {
+                        paywallViewModel.isPresented = true
+                    } else {
+                        withAnimation(.bouncy) {
+                            isPremium = false
+                            contentVM.videoOn.toggle()
+                            if !contentVM.videoOn {
+                                if cameraViewModel.isRecording {
+                                    cameraViewModel.stopRecording()
                                 }
+                                cameraViewModel.stopSession()
+                                cameraViewModel.audioLevel = 0.0
                             }
                         }
-                    } label: {
-                        Image(systemName: "video")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 30, height: 30)
-                            .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.color.text))
-
-
                     }
+                } label: {
+                    Image(systemName: "video")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .foregroundStyle(contentVM.videoOn ? Color.green : (isPremium ? Color.orange : Color.color.text))
+                        .frame(width: 78, height: 55)
                 }
+                .contentShape(Rectangle())
                 .frame(width: 78, height: 55, alignment: .center)
                 .applyIfAvailableGlassClear()
                 .overlay {
