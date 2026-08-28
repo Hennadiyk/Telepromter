@@ -199,11 +199,9 @@ struct ControlsView: View {
                 .padding(.horizontal, 20)
                 .allowsHitTesting(true)
         }
-        .simultaneousGesture(
-            TapGesture().onEnded {
-                withAnimation(.bouncy) { fontSpeedBar = false }
-            }
-        )
+        .onTapGesture {
+            withAnimation(.bouncy) { fontSpeedBar = false }
+        }
         .alert(cameraViewModel.alertMessage, isPresented: $cameraViewModel.showAlert) {
             Button("OK", role: .cancel) {}
         }

@@ -28,10 +28,11 @@ struct PaywallView: View {
                         .storeButton(.visible, for: .restorePurchases)
                         .subscriptionStoreControlStyle(.compactPicker)
                         .onInAppPurchaseCompletion { _, result in
-                            if case .success = result {
-                                dismiss()
+                            if case .success(let purchaseResult) = result,
+                               case .success = purchaseResult {
                                 isOnboardingComplete = true
                                 await paywallViewModel.updateCustomerProductStatus()
+                                dismiss()
                             }
                         }
                     }

@@ -42,10 +42,18 @@ final class PaywallViewModel {
                     let transaction = try self?.checkVerified(result)
                     await self?.updateCustomerProductStatus()
                     await transaction?.finish()
+                    // Dismiss paywall after restore or background renewal
+                    await self?.dismissIfSubscribed()
                 } catch {
                     print("transaction failed verification")
                 }
             }
+        }
+    }
+
+    private func dismissIfSubscribed() {
+        if !purchasedSubscriptions.isEmpty {
+            isPresented = false
         }
     }
 
@@ -82,13 +90,18 @@ final class PaywallViewModel {
     }
 
     func updateCustomerProductStatus() async {
+        // Ensure products are loaded before checking entitlements (guards against race on first launch)
+        if subscriptions.isEmpty {
+            await fetchProducts()
+        }
+        var newPurchasedSubscriptions: [Product] = []
         for await result in Transaction.currentEntitlements {
             do {
                 let transaction = try checkVerified(result)
                 switch transaction.productType {
                 case .autoRenewable:
                     if let subscription = subscriptions.first(where: { $0.id == transaction.productID }) {
-                        purchasedSubscriptions.append(subscription)
+                        newPurchasedSubscriptions.append(subscription)
                     }
                 default:
                     break
@@ -98,14 +111,24 @@ final class PaywallViewModel {
                 print("failed updating products")
             }
         }
+        purchasedSubscriptions = newPurchasedSubscriptions
+
+        // Update subscription group status so grace period / billing retry states are reflected
+        for subscription in subscriptions {
+            if let info = subscription.subscription,
+               let statuses = try? await info.status,
+               let latest = statuses.first {
+                subscriptionGroupStatus = latest.state
+                break
+            }
+        }
     }
 
     func shouldShowPaywall() -> Bool {
         if !purchasedSubscriptions.isEmpty { return false }
         if let status = subscriptionGroupStatus {
             switch status {
-            case .expired, .revoked: return true
-            case .subscribed, .inGracePeriod, .inBillingRetryPeriod: return false
+            case .subscribed, .inGracePeriod: return false
             default: return true
             }
         }
