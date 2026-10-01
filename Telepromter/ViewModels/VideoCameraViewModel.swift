@@ -114,6 +114,18 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
         setupPreviewLayer()
         setupOrientationObserver()
         setupAppLifecycleObservers()
+        removeLegacyRecordings()
+    }
+
+    /// Earlier versions recorded into Documents and never removed the file after saving to Photos.
+    /// Delete those leftover copies so they stop taking up storage.
+    private func removeLegacyRecordings() {
+        let fileManager = FileManager.default
+        guard let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first,
+              let files = try? fileManager.contentsOfDirectory(at: documents, includingPropertiesForKeys: nil) else { return }
+        for file in files where file.lastPathComponent.hasPrefix("video_") && file.pathExtension == "mov" {
+            try? fileManager.removeItem(at: file)
+        }
     }
 
     deinit {
@@ -391,6 +403,7 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
         recordingStoppedByBackground = false
 
         if let error = error, !backgroundStop {
+            try? FileManager.default.removeItem(at: outputFileURL)
             Task { @MainActor [weak self] in self?.postAlert(message: "Recording failed: \(error.localizedDescription)") }
             return
         }
@@ -404,6 +417,8 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
                 finalURL = outputFileURL
             } else if let cropped = await self.exportCropped(from: outputFileURL, aspectRatio: aspectRatio) {
                 finalURL = cropped
+                // The uncropped original is no longer needed once the cropped export exists
+                try? FileManager.default.removeItem(at: outputFileURL)
             } else {
                 finalURL = outputFileURL
             }
@@ -486,9 +501,11 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
                 self.isSavingVideo = false
                 if success {
                     self.lastVideoLocalURL = url
+                    // The local file is deleted after the thumbnail has been read from it
                     self.generateThumbnail(for: url)
                     self.videoSavedToPhotos = true
                 } else {
+                    try? FileManager.default.removeItem(at: url)
                     self.postAlert(message: "Failed to save video: \(error?.localizedDescription ?? "Unknown error")")
                 }
             }
@@ -502,6 +519,8 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
         let time = CMTime(seconds: 0.1, preferredTimescale: 600)
 
         generator.generateCGImageAsynchronously(for: time) { [weak self] cgImage, _, _ in
+            // The video lives in Photos now — drop the local copy whether or not a thumbnail was produced
+            try? FileManager.default.removeItem(at: url)
             guard let cgImage else { return }
             let thumbnail = UIImage(cgImage: cgImage)
             Task { @MainActor [weak self] in self?.lastVideoThumbnail = thumbnail }
@@ -791,11 +810,9 @@ countdownOnOff = UserDefaults.standard.bool(forKey: "contdownOnOff")
     }
 
     func startRecording() {
-        guard let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?
-            .appendingPathComponent("video_\(Date().timeIntervalSince1970).mov") else {
-            postAlert(message: "Cannot create output file")
-            return
-        }
+        // Record to the temp directory — the file is removed once it has been copied to Photos
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("video_\(Date().timeIntervalSince1970).mov")
         isRecording = true
 
         if countdownOnOff {

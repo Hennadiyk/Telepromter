@@ -493,7 +493,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Camera uses your location to tag where videos are taken.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to recognize speech";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save captured videos.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses the microphone to recognize speech";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Used to follow along with the teleprompter text as you speak, automatically scrolling to match your words.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -504,7 +504,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TeleprompterDE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -536,7 +536,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Camera uses your location to tag where videos are taken.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to recognize speech";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save captured videos.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app uses the microphone to recognize speech";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Used to follow along with the teleprompter text as you speak, automatically scrolling to match your words.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -547,7 +547,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hennk.TeleprompterDE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
